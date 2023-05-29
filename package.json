@@ -23,6 +23,6 @@
     "pnpm": "8.6.0"
   },
   "lint-staged": {
-    "*.{ts,js,css,md}": "prettier --write"
+    "*.{ts,js,mjs,cjs,css,md}": "prettier --write"
   }
 }
