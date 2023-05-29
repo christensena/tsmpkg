@@ -1,5 +1,7 @@
 # TODO:
 
+- [ ] use `@npmcli/package-json` to poke into package.json
+- [ ] use `tsconfig` and `types-tsconfig` or something to parse tsconfig.json
 - [ ] Checks on dev
   - [ ] tsup and export entry points match up
   - [ ] necessary bits in package.json and tsconfig.json

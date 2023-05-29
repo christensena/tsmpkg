@@ -1,43 +1,22 @@
 {
-  "name": "tsmpkg",
-  "version": "0.0.2",
-  "description": "Tool for setting up and maintaining pure esm module typescript packages",
-  "type": "module",
-  "files": [
-    "bin.js",
-    "src",
-    "dist"
-  ],
-  "bin": {
-    "tsmpkg": "./bin.js"
-  },
+  "name": "tsmpkg-monorepo",
+  "version": "1.0.0",
   "scripts": {
-    "clean": "rm -rf dist",
-    "build": "tsup",
+    "build": "pnpm run -r build",
+    "lint": "pnpm run -r lint",
+    "clean": "pnpm run -r clean",
     "prepare": "husky install"
   },
-  "keywords": [],
-  "author": "Alan Christensen",
-  "license": "ISC",
+  "private": true,
+  "type": "module",
   "devDependencies": {
     "@changesets/cli": "^2.26.1",
-    "@types/fs-extra": "^11.0.1",
-    "@types/node": "^20.2.5",
+    "@typescript-eslint/eslint-plugin": "^5.59.7",
+    "@typescript-eslint/parser": "^5.59.7",
+    "eslint": "^8.41.0",
     "husky": "^8.0.3",
     "prettier": "^2.8.8",
-    "tsup": "^6.7.0",
     "typescript": "^5.0.4"
-  },
-  "dependencies": {
-    "fs-extra": "^11.1.1"
-  },
-  "tsup": {
-    "entry": {
-      "index": "src/index.ts"
-    },
-    "format": "esm",
-    "clean": true,
-    "dts": true
   },
   "volta": {
     "node": "20.2.0",

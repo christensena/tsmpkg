@@ -1,5 +1,5 @@
 import { initDir } from "./initSrc.js";
-import { read as readPkg, write as writePkg } from "./package.js";
+import { fix as fixPackageJson } from "./package.js";
 import { read as readTsconfig, write as writeTsconfig } from "./tsconfig.js";
 
 export const init = async (dir: string) => {
@@ -10,38 +10,9 @@ export const init = async (dir: string) => {
 
 const initPackageJson = async (
   dir: string,
-  entryPoints: string[] = ["index"]
+  entryPoints: string[] = ["index"],
 ) => {
-  const pkg = await readPkg(dir);
-
-  pkg.type = "module";
-  pkg.module = `./dist/${entryPoints[0]}.js`;
-  pkg.exports = {
-    ".": `./dist/${entryPoints[0]}.js`,
-  };
-  pkg.devDependencies = {
-    ...pkg.devDependencies,
-    tsup: "^6.7.0",
-    tsmpkg: "workspace:*",
-  };
-  pkg.tsup = {
-    entry: Object.fromEntries(
-      entryPoints.map((name) => [name, `./src/${name}.ts`])
-    ),
-    clean: true,
-    format: ["esm"],
-    dts: true,
-  };
-  pkg.scripts = {
-    ...pkg.scripts,
-    clean: "rm -rf dist && tsmpkg dev",
-    build: "tsup",
-    postinstall: "tsmpkg dev",
-  };
-
-  delete pkg.main;
-
-  await writePkg(dir, pkg);
+  await fixPackageJson(dir);
 };
 
 const defaultTsconfig = {

@@ -33,13 +33,13 @@ export const dev = async (dir: string) => {
       path.join(distPath, `${name}.d.ts`),
       `export * from \".${value.replace(
         ".ts",
-        ".js"
+        ".js",
       )}\";\n//# sourceMappingURL=${name}.d.ts.map`,
-      "utf-8"
+      "utf-8",
     );
     await fs.writeFile(
       path.join(distPath, `${name}.d.ts.map`),
-      `{"version":3,"file":"${name}.d.ts","sourceRoot":"","sources":[".${value}"],"names":[],"mappings":"AAAA"}\n`
+      `{"version":3,"file":"${name}.d.ts","sourceRoot":"","sources":[".${value}"],"names":[],"mappings":"AAAA"}\n`,
     );
   }
 };
