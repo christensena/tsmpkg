@@ -33,7 +33,7 @@ importers:
   packages/testpkg:
     devDependencies:
       tsmpkg:
-        specifier: workspace:*
+        specifier: ^0.0.3
         version: link:../tsmpkg
       tsup:
         specifier: ^6.7.0
