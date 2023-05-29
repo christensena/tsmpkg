@@ -1,0 +1,33 @@
+{
+  "name": "testpkg",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "tsup"
+  },
+  "devDependencies": {
+    "tsmpkg": "^0.0.2",
+    "tsup": "^6.7.0",
+    "typescript": "^5.0.4"
+  },
+  "type": "module",
+  "module": "./dist/index.js",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "tsup": {
+    "entry": {
+      "index": "./src/index.ts"
+    },
+    "clean": true,
+    "format": [
+      "esm"
+    ],
+    "dts": true
+  },
+  "private": true,
+  "volta": {
+    "extends": "../../package.json"
+  }
+}

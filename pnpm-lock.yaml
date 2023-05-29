@@ -33,7 +33,7 @@ importers:
   packages/testpkg:
     devDependencies:
       tsmpkg:
-        specifier: ^0.0.2
+        specifier: workspace:*
         version: link:../tsmpkg
       tsup:
         specifier: ^6.7.0
@@ -60,9 +60,6 @@ importers:
       '@types/npmcli__package-json':
         specifier: ^2.0.0
         version: 2.0.0
-      package-json:
-        specifier: link:@types/@npmcli/package-json
-        version: link:@types/@npmcli/package-json
       tsup:
         specifier: ^6.7.0
         version: 6.7.0(typescript@5.0.4)
