@@ -1,0 +1,48 @@
+{
+  "name": "tsmpkg",
+  "version": "0.0.1",
+  "description": "Tool for setting up and maintaining pure esm module typescript packages",
+  "type": "module",
+  "files": [
+    "bin.js",
+    "src",
+    "dist"
+  ],
+  "bin": {
+    "tsmpkg": "./bin.js"
+  },
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "tsup"
+  },
+  "keywords": [],
+  "author": "Alan Christensen",
+  "license": "ISC",
+  "devDependencies": {
+    "@changesets/cli": "^2.26.1",
+    "@types/fs-extra": "^11.0.1",
+    "@types/node": "^20.2.5",
+    "husky": "^8.0.3",
+    "prettier": "^2.8.8",
+    "tsup": "^6.7.0",
+    "typescript": "^5.0.4"
+  },
+  "dependencies": {
+    "fs-extra": "^11.1.1"
+  },
+  "tsup": {
+    "entry": {
+      "index": "src/index.ts"
+    },
+    "format": "esm",
+    "clean": true,
+    "dts": true
+  },
+  "volta": {
+    "node": "20.2.0",
+    "pnpm": "8.6.0"
+  },
+  "lint-staged": {
+    "*.{ts,js,css,md}": "prettier --write"
+  }
+}
