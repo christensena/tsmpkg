@@ -25,7 +25,6 @@ export const fix = async (
     .replace("./src", "./dist")
     .replace(".ts", ".js")}`;
 
-  // @ts-ignore
   pkgJson.update({
     scripts: {
       ...pkg.scripts,
