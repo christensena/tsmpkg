@@ -1,39 +1,60 @@
-import path from "node:path";
 import PackageJson from "@npmcli/package-json";
-import fs from "node:fs/promises";
+import NPMCliPackageJson from "@npmcli/package-json";
 import type { Options as TsupOptions } from "tsup";
 
 export const fix = async (
   dir: string,
-  entryPoints: Extract<TsupOptions["entry"], Record<string, string>> = {
-    index: "./src/index.js",
+  entryPoints: TsupOptions["entry"] = {
+    index: "./src/index.ts",
   },
 ) => {
+  if (!(typeof entryPoints === "object" && !Array.isArray(entryPoints))) {
+    throw new Error("Entry points must be an object.");
+  }
+  if (!("index" in entryPoints)) {
+    throw new Error("Must have an `index` entry point.");
+  }
+
   const pkgJson = await PackageJson.load(dir);
+  const pkg = pkgJson.content as NPMCliPackageJson["content"] & {
+    tsup: TsupOptions;
+  };
+
+  // TODO: use regex to make more robust
+  const indexDistPath = `${entryPoints["index"]
+    .replace("./src", "./dist")
+    .replace(".ts", ".js")}`;
+
+  // @ts-ignore
   pkgJson.update({
     scripts: {
+      ...pkg.scripts,
       clean: "rm -rf dist && tsmpkg dev",
       build: "tsup",
       postinstall: "tsmpkg dev",
     },
     type: "module",
-    module: `./dist/index.js`,
+    module: indexDistPath,
+    main: undefined, // legacy
     exports: {
-      ".": `./dist/${entryPoints[0]}.js`,
+      ...(typeof pkg.exports === "object" ? pkg.exports : {}),
+      ".": indexDistPath,
+      // TODO: if tsup already there, generate exports for it
     },
     devDependencies: {
+      ...pkg.devDependencies,
       tsup: "^6.7.0",
       tsmpkg: "^0.0.2",
+      typescript: "^5.0.4",
     },
+    // @ts-ignore
     tsup: {
-      entry: Object.fromEntries(
-        entryPoints.map((name) => [name, `./src/${name}.ts`]),
-      ),
+      ...pkg.tsup,
+      entry: entryPoints,
       clean: true,
       format: ["esm"],
       dts: true,
     },
-    main: undefined,
   });
 
   await pkgJson.save();

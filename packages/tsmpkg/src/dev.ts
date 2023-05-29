@@ -1,7 +1,8 @@
 import path from "node:path";
 import fs from "node:fs/promises";
-import { remove, ensureDir } from "fs-extra/esm";
-import { read } from "./package.js";
+import { ensureDir, remove } from "fs-extra/esm";
+import PackageJson from "@npmcli/package-json";
+import NPMCliPackageJson from "@npmcli/package-json";
 import type { Options as TsupOptions } from "tsup";
 
 const getEntrypointNames = (tsup: TsupOptions) => {
@@ -15,7 +16,11 @@ const getEntrypointNames = (tsup: TsupOptions) => {
 };
 
 export const dev = async (dir: string) => {
-  const pkg = await read(dir);
+  const { content: pkg } = (await PackageJson.load(
+    dir,
+  )) as NPMCliPackageJson & {
+    content: { tsup: TsupOptions };
+  };
 
   const distPath = path.join(dir, "dist");
   await remove(distPath);
@@ -31,10 +36,10 @@ export const dev = async (dir: string) => {
 
     await fs.writeFile(
       path.join(distPath, `${name}.d.ts`),
-      `export * from \".${value.replace(
+      `export * from ".${value.replace(
         ".ts",
         ".js",
-      )}\";\n//# sourceMappingURL=${name}.d.ts.map`,
+      )}";\n//# sourceMappingURL=${name}.d.ts.map`,
       "utf-8",
     );
     await fs.writeFile(
