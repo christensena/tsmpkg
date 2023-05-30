@@ -1,6 +1,6 @@
 import path from "node:path";
 import fs from "node:fs/promises";
-import type { TsConfigSourceFile } from "typescript";
+// import type { TsConfigSourceFile } from "typescript";
 
 export const read = async (dir: string) => {
   const filePath = path.join(dir, "tsconfig.json");
@@ -13,7 +13,7 @@ export const read = async (dir: string) => {
   return JSON.parse(contents);
 };
 
-export const write = async (dir: string, pkg: any) => {
+export const write = async (dir: string, pkg: unknown) => {
   const filePath = path.join(dir, "tsconfig.json");
   return fs.writeFile(filePath, JSON.stringify(pkg, undefined, "  "), "utf-8");
 };

@@ -28,9 +28,10 @@ export const fix = async (
   pkgJson.update({
     scripts: {
       ...pkg.scripts,
-      clean: "rm -rf dist && tsmpkg dev",
+      clean: "rm -rf dist",
       build: "tsup",
       postinstall: "tsmpkg dev",
+      postclean: "tsmpkg dev",
     },
     type: "module",
     module: indexDistPath,

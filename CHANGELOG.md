@@ -1,7 +1,9 @@
 # tsmpkg
 
-## 0.0.2
+ES Modules Typescript Package Tooling.
+
+## 0.0.3
 
 ### Patch Changes
 
-- hopefully first consumable version
+- Less destructive package.json changes

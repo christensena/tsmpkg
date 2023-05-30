@@ -1,12 +1,12 @@
 name: build-and-test
 run-name: build-and-test
-on: [push]
+on: [ push ]
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [20.x]
+        node-version: [ 20.x ]
     steps:
       - uses: actions/checkout@v3
       - uses: pnpm/action-setup@v2
@@ -21,3 +21,7 @@ jobs:
         run: pnpm install
       - name: Build
         run: pnpm build
+      - name: Lint
+        run: pnpm lint
+      - name: Test
+        run: pnpm test

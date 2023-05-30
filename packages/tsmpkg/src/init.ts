@@ -1,6 +1,6 @@
 import { initDir } from "./initSrc.js";
 import { fix as fixPackageJson } from "./package.js";
-import { read as readTsconfig, write as writeTsconfig } from "./tsconfig.js";
+import { write as writeTsconfig } from "./tsconfig.js";
 
 export const init = async (dir: string) => {
   await initDir(dir);
@@ -8,10 +8,7 @@ export const init = async (dir: string) => {
   await initTsConfigJson(dir);
 };
 
-const initPackageJson = async (
-  dir: string,
-  entryPoints: string[] = ["index"],
-) => {
+const initPackageJson = async (dir: string) => {
   await fixPackageJson(dir);
 };
 

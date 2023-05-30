@@ -4,6 +4,7 @@
   "scripts": {
     "build": "pnpm run -r build",
     "lint": "pnpm run -r lint",
+    "test": "pnpm run -r test",
     "clean": "pnpm run -r clean",
     "prepare": "husky install"
   },

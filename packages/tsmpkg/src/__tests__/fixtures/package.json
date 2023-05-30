@@ -1,0 +1,31 @@
+{
+  "name": "test-example",
+  "version": "0.0.3",
+  "type": "module",
+  "files": [
+    "src",
+    "dist"
+  ],
+  "module": "./dist/index.js",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "tsup",
+    "postinstall": "tsmpkg dev",
+    "postclean": "tsmpkg dev"
+  },
+  "devDependencies": {
+    "tsup": "^6.7.0",
+    "typescript": "^5.0.4"
+  },
+  "tsup": {
+    "entry": {
+      "index": "src/index.ts"
+    },
+    "format": "esm",
+    "clean": true,
+    "dts": true
+  }
+}
