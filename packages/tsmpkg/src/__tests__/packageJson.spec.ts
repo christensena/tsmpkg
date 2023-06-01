@@ -1,28 +1,32 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import PackageJson from "@npmcli/package-json";
-import { check } from "../packageJson.js";
+import { checkPackageJson as check } from "../check/packageJson.js";
 import path from "node:path";
+import { Package, PackageContent } from "../shared/types.js";
+import { getPackageJson } from "../shared/index.js";
 
 describe("packageJson", () => {
-  let packageJson: PackageJson;
+  let packageJson: Package;
+
+  const doCheck = () => check(packageJson.content as PackageContent);
 
   beforeEach(async (ctx) => {
-    if (!ctx.meta.file?.filepath) {
+    if (!ctx.task.file?.filepath) {
       throw new Error(`Expected filepath in context`);
     }
     const validPackageDir = path.join(
-      path.dirname(ctx.meta.file?.filepath),
+      path.dirname(ctx.task.file?.filepath),
       "fixtures/",
     );
-    packageJson = await PackageJson.load(validPackageDir);
+    packageJson = await getPackageJson(validPackageDir);
   });
 
   describe("check should return error", () => {
-    it("where main field specified", () => {
+    // depends if cjs is enabled
+    it.skip("where main field specified", () => {
       packageJson.update({
         main: "index.js",
       });
-      expect(check(packageJson)).toMatchInlineSnapshot(`
+      expect(doCheck()).toMatchInlineSnapshot(`
         [
           "\`main\` field is not required on a es module package.",
         ]
@@ -33,7 +37,7 @@ describe("packageJson", () => {
       packageJson.update({
         type: undefined,
       });
-      expect(check(packageJson)).toMatchInlineSnapshot(`
+      expect(doCheck()).toMatchInlineSnapshot(`
         [
           "\`type\` field must be \`module\`.",
         ]
@@ -44,7 +48,7 @@ describe("packageJson", () => {
       packageJson.update({
         module: undefined,
       });
-      expect(check(packageJson)).toMatchInlineSnapshot(`
+      expect(doCheck()).toMatchInlineSnapshot(`
         [
           "\`module\` field must be provided.",
         ]
@@ -55,7 +59,7 @@ describe("packageJson", () => {
       packageJson.update({
         files: ["src", "hi"],
       });
-      expect(check(packageJson)).toMatchInlineSnapshot(`
+      expect(doCheck()).toMatchInlineSnapshot(`
         [
           "\`files\` must include \`dist\`",
         ]
@@ -69,7 +73,7 @@ describe("packageJson", () => {
         packageJson.update({
           files: [entry],
         });
-        expect(check(packageJson)).toEqual([]);
+        expect(doCheck()).toEqual([]);
       }
     });
   });

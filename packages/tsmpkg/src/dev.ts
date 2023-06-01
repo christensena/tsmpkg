@@ -1,14 +1,14 @@
 import path from "node:path";
 import fs from "node:fs/promises";
 import { ensureDir, remove } from "fs-extra/esm";
-import PackageJson from "@npmcli/package-json";
-import NPMCliPackageJson from "@npmcli/package-json";
 import { findWorkspaceDir } from "@pnpm/find-workspace-dir";
 import {
   findWorkspacePackagesNoCheck,
   Project,
 } from "@pnpm/find-workspace-packages";
 import type { Options as TsupOptions } from "tsup";
+import { cjsRequired, getPackageJsonContent } from "./shared/index.js";
+import { validate } from "./check/index.js";
 
 const getEntrypointNames = (tsup: TsupOptions) => {
   if (!tsup.entry) {
@@ -43,13 +43,12 @@ export const dev = async (dir: string) => {
 };
 
 export const devPkg = async (dir: string) => {
-  const { content: pkg } = (await PackageJson.load(
-    dir,
-  )) as NPMCliPackageJson & {
-    content: { tsup: TsupOptions };
-  };
-
-  const supportCjs = pkg.tsup?.format?.includes("cjs");
+  const valid = await validate(dir);
+  if (!valid) {
+    process.exit(1);
+  }
+  const pkg = await getPackageJsonContent(dir);
+  const supportCjs = cjsRequired(pkg);
 
   const distPath = path.join(dir, "dist");
   await remove(distPath);

@@ -12,9 +12,7 @@
   },
   "scripts": {
     "clean": "rm -rf dist",
-    "build": "tsup",
-    "postinstall": "tsmpkg dev",
-    "postclean": "tsmpkg dev"
+    "build": "tsup"
   },
   "devDependencies": {
     "tsup": "^6.7.0",
@@ -24,7 +22,9 @@
     "entry": {
       "index": "src/index.ts"
     },
-    "format": "esm",
+    "format": [
+      "esm"
+    ],
     "clean": true,
     "dts": true
   }

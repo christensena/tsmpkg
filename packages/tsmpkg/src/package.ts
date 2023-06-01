@@ -1,16 +1,13 @@
-import PackageJson from "@npmcli/package-json";
-import NPMCliPackageJson from "@npmcli/package-json";
 import type { Options as TsupOptions } from "tsup";
+import { getPackageJson } from "./shared/index.js";
 
 type FixOptions = {
   supportCjs?: boolean;
 };
 
 export const fix = async (dir: string, options: FixOptions = {}) => {
-  const pkgJson = await PackageJson.load(dir);
-  const pkg = pkgJson.content as NPMCliPackageJson["content"] & {
-    tsup: TsupOptions;
-  };
+  const pkgJson = await getPackageJson(dir);
+  const pkg = pkgJson.content;
 
   const entryPoints = pkg.tsup.entry ?? {
     index: "./src/index.ts",
