@@ -6,7 +6,7 @@
     "lint": "pnpm run -r lint",
     "test": "pnpm run -r test",
     "clean": "pnpm run -r clean",
-    "prepare": "husky install",
+    "prepare": "is-ci || husky install",
     "postinstall": " pnpm run -r --filter tsmpkg build && tsmpkg dev"
   },
   "private": true,
@@ -17,6 +17,7 @@
     "@typescript-eslint/parser": "^5.59.7",
     "eslint": "^8.41.0",
     "husky": "^8.0.3",
+    "is-ci": "^3.0.1",
     "prettier": "^2.8.8",
     "tsmpkg": "workspace:*",
     "typescript": "^5.0.4"
