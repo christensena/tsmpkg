@@ -48,7 +48,7 @@ importers:
   packages/test-pkg:
     devDependencies:
       tsmpkg:
-        specifier: ^0.0.4
+        specifier: ^0.0.5
         version: link:../tsmpkg
       tsup:
         specifier: ^6.7.0
