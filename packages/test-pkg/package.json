@@ -4,8 +4,7 @@
   "description": "",
   "scripts": {
     "clean": "rm -rf dist",
-    "build": "tsup",
-    "postclean": "tsmpkg dev"
+    "build": "tsup"
   },
   "type": "module",
   "main": "./dist/index.cjs",
