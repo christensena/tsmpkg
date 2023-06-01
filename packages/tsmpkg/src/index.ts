@@ -1,6 +1,7 @@
 import { parseArgs } from "node:util";
 import { init } from "./init.js";
 import { dev } from "./dev.js";
+import { fix } from "./package.js";
 
 export const run = async () => {
   const args = parseArgs({
@@ -15,6 +16,14 @@ export const run = async () => {
     }
     case "dev": {
       await dev(process.cwd());
+      break;
+    }
+    case "fix": {
+      await fix(process.cwd(), { supportCjs: true });
+      break;
+    }
+    default: {
+      console.info("tsmpkg init|dev|fix");
       break;
     }
   }

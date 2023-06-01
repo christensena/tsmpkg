@@ -6,7 +6,8 @@
     "lint": "pnpm run -r lint",
     "test": "pnpm run -r test",
     "clean": "pnpm run -r clean",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "postinstall": "tsmpkg dev"
   },
   "private": true,
   "type": "module",
@@ -17,6 +18,7 @@
     "eslint": "^8.41.0",
     "husky": "^8.0.3",
     "prettier": "^2.8.8",
+    "tsmpkg": "workspace:*",
     "typescript": "^5.0.4"
   },
   "volta": {

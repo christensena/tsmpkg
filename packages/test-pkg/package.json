@@ -4,27 +4,38 @@
   "description": "",
   "scripts": {
     "clean": "rm -rf dist",
-    "build": "tsup"
+    "build": "tsup",
+    "postclean": "tsmpkg dev"
+  },
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./schemas": {
+      "import": "./dist/schemas.js",
+      "require": "./dist/schemas.cjs"
+    }
+  },
+  "tsup": {
+    "entry": {
+      "index": "./src/index.ts",
+      "schemas": "./src/schemas/index.ts"
+    },
+    "clean": true,
+    "format": [
+      "esm",
+      "cjs"
+    ],
+    "dts": true
   },
   "devDependencies": {
     "tsmpkg": "^0.0.4",
     "tsup": "^6.7.0",
     "typescript": "^5.0.4"
-  },
-  "type": "module",
-  "module": "./dist/index.js",
-  "exports": {
-    ".": "./dist/index.js"
-  },
-  "tsup": {
-    "entry": {
-      "index": "./src/index.ts"
-    },
-    "clean": true,
-    "format": [
-      "esm"
-    ],
-    "dts": true
   },
   "private": true,
   "volta": {

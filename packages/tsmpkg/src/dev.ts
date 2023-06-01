@@ -46,6 +46,8 @@ export const devPkg = async (dir: string) => {
     content: { tsup: TsupOptions };
   };
 
+  const supportCjs = pkg.tsup?.format?.includes("cjs");
+
   const distPath = path.join(dir, "dist");
   await remove(distPath);
   await ensureDir(distPath);
@@ -57,6 +59,13 @@ export const devPkg = async (dir: string) => {
       throw new Error(`Entry points must start with ./`);
     }
     await fs.symlink(path.join(dir, value), path.join(distPath, `${name}.js`));
+
+    if (supportCjs) {
+      await fs.symlink(
+        path.join(dir, value),
+        path.join(distPath, `${name}.cjs`),
+      );
+    }
 
     await fs.writeFile(
       path.join(distPath, `${name}.d.ts`),

@@ -1,0 +1,10 @@
+{
+  "name": "test-consuming-pkg-esm",
+  "version": "1.0.0",
+  "module": "index.js",
+  "type": "module",
+  "dependencies": {
+    "test-pkg": "workspace:*"
+  },
+  "private": true
+}

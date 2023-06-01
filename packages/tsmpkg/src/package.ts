@@ -2,51 +2,57 @@ import PackageJson from "@npmcli/package-json";
 import NPMCliPackageJson from "@npmcli/package-json";
 import type { Options as TsupOptions } from "tsup";
 
-export const fix = async (
-  dir: string,
-  entryPoints: TsupOptions["entry"] = {
-    index: "./src/index.ts",
-  },
-) => {
-  if (!(typeof entryPoints === "object" && !Array.isArray(entryPoints))) {
-    throw new Error("Entry points must be an object.");
-  }
-  if (!("index" in entryPoints)) {
-    throw new Error("Must have an `index` entry point.");
-  }
+type FixOptions = {
+  supportCjs?: boolean;
+};
 
+export const fix = async (dir: string, options: FixOptions) => {
   const pkgJson = await PackageJson.load(dir);
   const pkg = pkgJson.content as NPMCliPackageJson["content"] & {
     tsup: TsupOptions;
   };
 
-  // TODO: use regex to make more robust
-  const indexDistPath = `${entryPoints["index"]
-    .replace("./src", "./dist")
-    .replace(".ts", ".js")}`;
+  const entryPoints = pkg.tsup.entry ?? {
+    index: "./src/index.ts",
+  };
+
+  const tsupExistingFormat = pkg.tsup?.format;
+  const supportCjs =
+    options.supportCjs !== undefined
+      ? options.supportCjs
+      : tsupExistingFormat?.includes("cjs") ?? false;
+
+  if (!(typeof entryPoints === "object" && !Array.isArray(entryPoints))) {
+    throw new Error("Entry points in tsup config must be an object.");
+  }
+
+  const indexSrcPath = entryPoints["index"];
+  if (!indexSrcPath) {
+    throw new Error("Must have an `index` entry point in tsup config.");
+  }
+
+  const indexDistPath = makeExportPath("index");
+  const indexCjsDistPath = makeExportPath("index", ".cjs");
+
+  const tsmpkgVersion = "0.0.4";
 
   pkgJson.update({
     scripts: {
       ...pkg.scripts,
       clean: "rm -rf dist",
       build: "tsup",
-      // this postinstall needs to be on workspace root. on package it goes out in published package
-      // and gets run which is not what we want!
-      // postinstall: "tsmpkg dev",
-      postclean: "tsmpkg dev",
     },
     type: "module",
     module: indexDistPath,
-    main: undefined, // legacy
+    main: supportCjs ? indexCjsDistPath : undefined,
     exports: {
       ...(typeof pkg.exports === "object" ? pkg.exports : {}),
-      ".": indexDistPath,
-      // TODO: if tsup already there, generate exports for it
+      ...entryPointsToExports(entryPoints, { supportCjs }),
     },
     devDependencies: {
       ...pkg.devDependencies,
       tsup: "^6.7.0",
-      tsmpkg: "^0.0.2",
+      tsmpkg: `^${tsmpkgVersion}`,
       typescript: "^5.0.4",
     },
     // @ts-ignore
@@ -54,10 +60,35 @@ export const fix = async (
       ...pkg.tsup,
       entry: entryPoints,
       clean: true,
-      format: ["esm"],
+      format: tsupExistingFormat ?? supportCjs ? ["esm", "cjs"] : ["esm"],
       dts: true,
     },
   });
 
   await pkgJson.save();
 };
+
+const makeExportPath = (name: string, ext = ".js") => `./dist/${name}${ext}`;
+
+const entryPointsToExports = (
+  entryPoints: NonNullable<TsupOptions["entry"]>,
+  { supportCjs }: FixOptions,
+) =>
+  Object.fromEntries(
+    Object.entries(entryPoints).map(([name]) => {
+      const esmPath = makeExportPath(name, ".js");
+      const entryName = name === "index" ? "." : `./${name}`;
+      if (supportCjs) {
+        const cjsPath = makeExportPath(name, ".cjs");
+        return [
+          entryName,
+          {
+            import: esmPath,
+            require: cjsPath,
+          },
+        ];
+      } else {
+        return [entryName, esmPath];
+      }
+    }),
+  );
