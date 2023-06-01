@@ -30,7 +30,9 @@ export const fix = async (
       ...pkg.scripts,
       clean: "rm -rf dist",
       build: "tsup",
-      postinstall: "tsmpkg dev",
+      // this postinstall needs to be on workspace root. on package it goes out in published package
+      // and gets run which is not what we want!
+      // postinstall: "tsmpkg dev",
       postclean: "tsmpkg dev",
     },
     type: "module",
