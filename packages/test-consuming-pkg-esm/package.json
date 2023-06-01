@@ -4,7 +4,7 @@
   "module": "index.js",
   "type": "module",
   "dependencies": {
-    "test-pkg": "workspace:*"
+    "test-pkg": "workspace:^"
   },
   "private": true,
   "volta": {

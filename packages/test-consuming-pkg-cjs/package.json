@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "dependencies": {
-    "test-pkg": "workspace:*"
+    "test-pkg": "workspace:^"
   },
   "private": true,
   "volta": {
