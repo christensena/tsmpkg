@@ -6,7 +6,7 @@ type FixOptions = {
   supportCjs?: boolean;
 };
 
-export const fix = async (dir: string, options: FixOptions) => {
+export const fix = async (dir: string, options: FixOptions = {}) => {
   const pkgJson = await PackageJson.load(dir);
   const pkg = pkgJson.content as NPMCliPackageJson["content"] & {
     tsup: TsupOptions;
