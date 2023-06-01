@@ -27,7 +27,10 @@ const isTsmpkg = (proj: Project) => !!proj.manifest.devDependencies?.tsmpkg;
 export const dev = async (dir: string) => {
   const workspaceDir = await findWorkspaceDir(dir);
   if (!workspaceDir) {
-    throw new Error(`Workspace dir could not be found from ${dir}.`);
+    console.error(
+      `Workspace dir could not be found from ${dir}.\n'dev' only needed in monorepos.\nOnly pnpm monorepos currently supported.`,
+    );
+    process.exit(1);
   }
 
   const projects = (await findWorkspacePackagesNoCheck(workspaceDir)).filter(

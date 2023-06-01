@@ -29,7 +29,7 @@ Checks
 
 - Dev mode
 
-  - [ ] Do checks (and prompt to run `fix`)
+  - [ ] Do checks (and prompt to run `fix`). Non-zero exit if checks fail.
   - [ ] esbuild-register hook for on-fly transpile so consumers don't have to
         process typescript?
   - [ ] More robust investigation as to permutations of cjs/esm import/require
@@ -47,5 +47,12 @@ Checks
   - [ ]
 
 - Robust enhancements
+
   - [ ] Support all forms of tsup config (not exported from tsup tho)
   - [ ] Support string array entry points from tsup
+
+- Other ideas
+  - [ ] Check/lint mode (dev will run it anyway)
+  - [ ] Non monorepo support
+  - [ ] Yarn/npm monorepo support?
+  - [ ] New name
