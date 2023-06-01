@@ -6,5 +6,8 @@
   "dependencies": {
     "test-pkg": "workspace:*"
   },
-  "private": true
+  "private": true,
+  "volta": {
+    "extends": "../../package.json"
+  }
 }
