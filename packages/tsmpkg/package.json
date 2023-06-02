@@ -4,12 +4,11 @@
   "description": "Tool for setting up and maintaining pure esm module typescript packages",
   "type": "module",
   "files": [
-    "bin.mjs",
     "src",
     "dist"
   ],
   "bin": {
-    "tsmpkg": "./bin.mjs"
+    "tsmpkg": "./dist/bin.js"
   },
   "scripts": {
     "clean": "rm -rf dist",
@@ -34,16 +33,8 @@
     "@pnpm/find-workspace-packages": "^6.0.9",
     "fs-extra": "^11.1.1"
   },
-  "tsup": {
-    "entry": {
-      "index": "src/index.ts"
-    },
-    "minify": true,
-    "sourcemap": true,
-    "target": "node18",
-    "format": "esm",
-    "clean": true,
-    "dts": true
+  "engines": {
+    "node": ">=18"
   },
   "volta": {
     "extends": "../../package.json"
