@@ -21,14 +21,13 @@ describe("packageJson", () => {
   });
 
   describe("check should return error", () => {
-    // depends if cjs is enabled
-    it.skip("where main field specified", () => {
+    it("where main field specified where cjs not supported", () => {
       packageJson.update({
         main: "index.js",
       });
       expect(doCheck()).toMatchInlineSnapshot(`
         [
-          "\`main\` field is not required on a es module package.",
+          "\`main\` field is not required unless cjs supported.",
         ]
       `);
     });
@@ -75,6 +74,18 @@ describe("packageJson", () => {
         });
         expect(doCheck()).toEqual([]);
       }
+    });
+
+    it("where main field specified cjs supported", () => {
+      packageJson.update({
+        main: "index.js",
+        // @ts-ignore
+        tsup: {
+          ...packageJson.content.tsup,
+          format: ["esm", "cjs"],
+        },
+      });
+      expect(doCheck()).toEqual([]);
     });
   });
 });

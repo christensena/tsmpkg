@@ -1,4 +1,8 @@
-import { getPackageJsonContent, handleCheckErrors } from "../shared/index.js";
+import {
+  cjsRequired,
+  getPackageJsonContent,
+  handleCheckErrors,
+} from "../shared/index.js";
 import { PackageContent } from "../shared/types.js";
 
 export const check = async (dir: string) => {
@@ -11,8 +15,9 @@ export const check = async (dir: string) => {
 export const checkPackageJson = (pkg: PackageContent) => {
   const errors: string[] = [];
 
-  if (pkg.main) {
-    errors.push("`main` field is not required on a es module package.");
+  const cjsSupported = cjsRequired(pkg);
+  if (pkg.main && !cjsSupported) {
+    errors.push("`main` field is not required unless cjs supported.");
   }
   if (pkg.type !== "module") {
     errors.push("`type` field must be `module`.");

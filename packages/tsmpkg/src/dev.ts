@@ -2,12 +2,13 @@ import path from "node:path";
 import fs from "node:fs/promises";
 import { ensureDir, remove } from "fs-extra/esm";
 import { findWorkspaceDir } from "@pnpm/find-workspace-dir";
-import {
-  findWorkspacePackagesNoCheck,
-  Project,
-} from "@pnpm/find-workspace-packages";
+import { findWorkspacePackagesNoCheck } from "@pnpm/find-workspace-packages";
 import type { Options as TsupOptions } from "tsup";
-import { cjsRequired, getPackageJsonContent } from "./shared/index.js";
+import {
+  cjsRequired,
+  getPackageJsonContent,
+  isTsmpkg,
+} from "./shared/index.js";
 import { validate } from "./check/index.js";
 
 const getEntrypointNames = (tsup: TsupOptions) => {
@@ -19,10 +20,6 @@ const getEntrypointNames = (tsup: TsupOptions) => {
   }
   return tsup.entry;
 };
-
-// TODO: need some better criteria but don't want to exclude private packages
-// but some may have it as a workspace package dep rather than dev dep on each package
-const isTsmpkg = (proj: Project) => !!proj.manifest.devDependencies?.tsmpkg;
 
 export const dev = async (dir: string) => {
   const workspaceDir = await findWorkspaceDir(dir);
