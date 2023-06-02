@@ -11,9 +11,11 @@ import {
 } from "./shared/index.js";
 import { validate } from "./check/index.js";
 
-const getEntrypointNames = (tsup: TsupOptions) => {
-  if (!tsup.entry) {
-    return "index";
+const defaultTsupEntry = { index: "./src/index.ts" };
+
+const getEntryPoints = (tsup?: TsupOptions) => {
+  if (!tsup?.entry) {
+    return defaultTsupEntry;
   }
   if (Array.isArray(tsup.entry)) {
     throw new Error(`Array entrypoints not yet supported. use object syntax`);
@@ -51,7 +53,7 @@ export const devPkg = async (dir: string) => {
   await remove(distPath);
   await ensureDir(distPath);
 
-  const entryPoints = getEntrypointNames(pkg.tsup);
+  const entryPoints = getEntryPoints(pkg.tsup);
 
   for (const [name, value] of Object.entries(entryPoints)) {
     if (!value.startsWith("./")) {

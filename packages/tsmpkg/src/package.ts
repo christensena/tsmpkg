@@ -9,7 +9,7 @@ export const fix = async (dir: string, options: FixOptions = {}) => {
   const pkgJson = await getPackageJson(dir);
   const pkg = pkgJson.content;
 
-  const entryPoints = pkg.tsup.entry ?? {
+  const entryPoints = pkg.tsup?.entry ?? {
     index: "./src/index.ts",
   };
 

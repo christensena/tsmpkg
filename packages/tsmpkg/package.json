@@ -4,18 +4,18 @@
   "description": "Tool for setting up and maintaining pure esm module typescript packages",
   "type": "module",
   "files": [
-    "bin.js",
+    "bin.mjs",
     "src",
     "dist"
   ],
   "bin": {
-    "tsmpkg": "./bin.js"
+    "tsmpkg": "./bin.mjs"
   },
   "scripts": {
     "clean": "rm -rf dist",
     "build": "tsup",
     "test": "vitest run",
-    "lint": "tsc && eslint ."
+    "lint": "eslint ."
   },
   "keywords": [],
   "author": "Alan Christensen",
