@@ -1,7 +1,11 @@
-import { check as checkPackageJson } from "./packageJson.js";
+import { validatePackageJson } from "./packageJson.js";
+import { validateTsConfigJson } from "./validateTsConfigJson.js";
 
 export const validate = async (dir: string) => {
-  const errors = await checkPackageJson(dir);
+  const errors = [
+    ...(await validatePackageJson(dir)),
+    ...(await validateTsConfigJson(dir)),
+  ];
   return errors.length === 0;
 };
 

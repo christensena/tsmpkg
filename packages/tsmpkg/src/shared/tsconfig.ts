@@ -1,20 +1,15 @@
 import path from "node:path";
-import fs from "node:fs/promises";
-// import type { TsConfigSourceFile } from "typescript";
+import fsp from "node:fs/promises";
 
-// TODO: use typescript package to parse tsconfig.json
+import { load } from "tsconfig";
+import { parseTSConfigJSON } from "types-tsconfig";
+
 export const readTsConfig = async (dir: string) => {
-  const filePath = path.join(dir, "tsconfig.json");
-
-  if (!(await fs.lstat(filePath))) {
-    return undefined;
-  }
-  const contents = await fs.readFile(filePath, "utf-8");
-
-  return JSON.parse(contents);
+  const tsconfig = await load(dir);
+  return parseTSConfigJSON(tsconfig.config);
 };
 
 export const writeTsConfig = async (dir: string, pkg: unknown) => {
   const filePath = path.join(dir, "tsconfig.json");
-  return fs.writeFile(filePath, JSON.stringify(pkg, undefined, "  "), "utf-8");
+  return fsp.writeFile(filePath, JSON.stringify(pkg, undefined, "  "), "utf-8");
 };

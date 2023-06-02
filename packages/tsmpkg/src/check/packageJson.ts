@@ -6,14 +6,14 @@ import {
 import { PackageContent } from "../shared/types.js";
 import path from "node:path";
 
-export const check = async (dir: string) => {
+export const validatePackageJson = async (dir: string) => {
   const pkg = await getPackageJsonContent(dir);
-  const errors = checkPackageJson(pkg);
+  const errors = validatePackage(pkg);
   handleCheckErrors("package.json", errors);
   return errors;
 };
 
-export const checkPackageJson = (pkg: PackageContent) => {
+export const validatePackage = (pkg: PackageContent) => {
   const errors: string[] = [];
 
   const cjsSupported = cjsRequired(pkg);

@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { checkPackageJson as check } from "../check/packageJson.js";
+import { validatePackage } from "../check/packageJson.js";
 import path from "node:path";
 import { Package, PackageContent } from "../shared/types.js";
 import { getPackageJson } from "../shared/index.js";
@@ -7,7 +7,7 @@ import { getPackageJson } from "../shared/index.js";
 describe("packageJson", () => {
   let packageJson: Package;
 
-  const doCheck = () => check(packageJson.content as PackageContent);
+  const check = () => validatePackage(packageJson.content as PackageContent);
 
   beforeEach(async (ctx) => {
     if (!ctx.task.file?.filepath) {
@@ -25,7 +25,7 @@ describe("packageJson", () => {
       packageJson.update({
         type: undefined,
       });
-      expect(doCheck()).toMatchInlineSnapshot(`
+      expect(check()).toMatchInlineSnapshot(`
         [
           "\`type\` field must be \`module\`.",
         ]
@@ -36,7 +36,7 @@ describe("packageJson", () => {
       packageJson.update({
         main: undefined,
       });
-      expect(doCheck()).toMatchInlineSnapshot(`
+      expect(check()).toMatchInlineSnapshot(`
         [
           "\`main\` field must be provided.",
         ]
@@ -52,7 +52,7 @@ describe("packageJson", () => {
           format: ["esm", "cjs"],
         },
       });
-      expect(doCheck()).toMatchInlineSnapshot(`
+      expect(check()).toMatchInlineSnapshot(`
         [
           "\`main\` field should point to .cjs when cjs supported.",
         ]
@@ -63,7 +63,7 @@ describe("packageJson", () => {
       packageJson.update({
         files: ["src", "hi"],
       });
-      expect(doCheck()).toMatchInlineSnapshot(`
+      expect(check()).toMatchInlineSnapshot(`
         [
           "\`files\` must include \`dist\`",
         ]
@@ -77,7 +77,7 @@ describe("packageJson", () => {
         packageJson.update({
           files: [entry],
         });
-        expect(doCheck()).toEqual([]);
+        expect(check()).toEqual([]);
       }
     });
   });
