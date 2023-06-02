@@ -24,12 +24,10 @@ Checks
   - [x] Sync up exports with tsup (tsup wins)
     - [ ] Use `outExension` lookup if set
   - [ ] Corrections to package.json and tsconfig.json
-  - [ ] With pnpm (not sure about others) make
-        sure `enable-pre-post-scripts=true` in `.npmrc`
 
 - Dev mode
 
-  - [ ] Do checks (and prompt to run `fix`). Non-zero exit if checks fail.
+  - [x] Do checks (and prompt to run `fix`). Non-zero exit if checks fail.
   - [ ] esbuild-register hook for on-fly transpile so consumers don't have to
         process typescript?
   - [ ] More robust investigation as to permutations of cjs/esm import/require
@@ -56,3 +54,4 @@ Checks
   - [ ] Non monorepo support
   - [ ] Yarn/npm monorepo support?
   - [ ] New name
+  - [ ] Init

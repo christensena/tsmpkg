@@ -4,6 +4,7 @@ import {
   handleCheckErrors,
 } from "../shared/index.js";
 import { PackageContent } from "../shared/types.js";
+import path from "node:path";
 
 export const check = async (dir: string) => {
   const pkg = await getPackageJsonContent(dir);
@@ -16,15 +17,15 @@ export const checkPackageJson = (pkg: PackageContent) => {
   const errors: string[] = [];
 
   const cjsSupported = cjsRequired(pkg);
-  if (pkg.main && !cjsSupported) {
-    errors.push("`main` field is not required unless cjs supported.");
+  if (!pkg.main) {
+    // https://nodejs.org/api/packages.html#package-entry-points
+    errors.push("`main` field must be provided.");
+  }
+  if (pkg.main && cjsSupported && path.extname(pkg.main) !== ".cjs") {
+    errors.push("`main` field should point to .cjs when cjs supported.");
   }
   if (pkg.type !== "module") {
     errors.push("`type` field must be `module`.");
-  }
-
-  if (!pkg.module) {
-    errors.push("`module` field must be provided.");
   }
 
   // TODO: better to attempt a path resolve

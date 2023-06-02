@@ -21,17 +21,6 @@ describe("packageJson", () => {
   });
 
   describe("check should return error", () => {
-    it("where main field specified where cjs not supported", () => {
-      packageJson.update({
-        main: "index.js",
-      });
-      expect(doCheck()).toMatchInlineSnapshot(`
-        [
-          "\`main\` field is not required unless cjs supported.",
-        ]
-      `);
-    });
-
     it("where type not specified", () => {
       packageJson.update({
         type: undefined,
@@ -43,13 +32,29 @@ describe("packageJson", () => {
       `);
     });
 
-    it("where module not specified", () => {
+    it("where main not specified", () => {
       packageJson.update({
-        module: undefined,
+        main: undefined,
       });
       expect(doCheck()).toMatchInlineSnapshot(`
         [
-          "\`module\` field must be provided.",
+          "\`main\` field must be provided.",
+        ]
+      `);
+    });
+
+    it("where cjs supported but main not pointing to cjs version", () => {
+      packageJson.update({
+        main: "dist/index.js",
+        // @ts-ignore
+        tsup: {
+          ...packageJson.content.tsup,
+          format: ["esm", "cjs"],
+        },
+      });
+      expect(doCheck()).toMatchInlineSnapshot(`
+        [
+          "\`main\` field should point to .cjs when cjs supported.",
         ]
       `);
     });
@@ -74,18 +79,6 @@ describe("packageJson", () => {
         });
         expect(doCheck()).toEqual([]);
       }
-    });
-
-    it("where main field specified cjs supported", () => {
-      packageJson.update({
-        main: "index.js",
-        // @ts-ignore
-        tsup: {
-          ...packageJson.content.tsup,
-          format: ["esm", "cjs"],
-        },
-      });
-      expect(doCheck()).toEqual([]);
     });
   });
 });

@@ -40,8 +40,7 @@ export const fix = async (dir: string, options: FixOptions = {}) => {
       build: "tsup",
     },
     type: "module",
-    module: indexDistPath,
-    main: supportCjs ? indexCjsDistPath : undefined,
+    main: supportCjs ? indexCjsDistPath : indexDistPath,
     exports: {
       ...(typeof pkg.exports === "object" ? pkg.exports : {}),
       ...entryPointsToExports(entryPoints, { supportCjs }),

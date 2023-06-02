@@ -2,6 +2,7 @@ import { parseArgs } from "node:util";
 import { init } from "./init.js";
 import { dev } from "./dev.js";
 import { fix } from "./package.js";
+import { check } from "./check/packageJson.js";
 
 export const run = async () => {
   const args = parseArgs({
@@ -20,6 +21,10 @@ export const run = async () => {
     }
     case "fix": {
       await fix(process.cwd(), { supportCjs: true });
+      break;
+    }
+    case "check": {
+      await check(process.cwd());
       break;
     }
     default: {
