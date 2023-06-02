@@ -1,16 +1,4 @@
-import { initDir } from "./initSrc.js";
-import { fix as fixPackageJson } from "./package.js";
-import { write as writeTsconfig } from "./tsconfig.js";
-
-export const init = async (dir: string) => {
-  await initDir(dir);
-  await initPackageJson(dir);
-  await initTsConfigJson(dir);
-};
-
-const initPackageJson = async (dir: string) => {
-  await fixPackageJson(dir);
-};
+import { writeTsConfig } from "../shared/index.js";
 
 const defaultTsconfig = {
   compilerOptions: {
@@ -37,8 +25,8 @@ const defaultTsconfig = {
   include: ["./src"],
 };
 
-const initTsConfigJson = async (dir: string) => {
+export const initTsConfigJson = async (dir: string) => {
   // const tsConfig = await readTsconfig(dir);
 
-  await writeTsconfig(dir, defaultTsconfig);
+  await writeTsConfig(dir, defaultTsconfig);
 };

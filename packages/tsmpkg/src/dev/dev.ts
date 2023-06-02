@@ -8,8 +8,8 @@ import {
   cjsRequired,
   getPackageJsonContent,
   isTsmpkg,
-} from "./shared/index.js";
-import { validate } from "./check/index.js";
+} from "../shared/index.js";
+import { validate } from "../check/index.js";
 
 const defaultTsupEntry = { index: "./src/index.ts" };
 

@@ -1,11 +1,14 @@
-import type { Options as TsupOptions } from "tsup";
-import { getPackageJson } from "./shared/index.js";
+import {
+  entryPointsToExports,
+  getPackageJson,
+  makeExportPath,
+} from "../shared/index.js";
 
 type FixOptions = {
   supportCjs?: boolean;
 };
 
-export const fix = async (dir: string, options: FixOptions = {}) => {
+export const fixPackageJson = async (dir: string, options: FixOptions = {}) => {
   const pkgJson = await getPackageJson(dir);
   const pkg = pkgJson.content;
 
@@ -63,28 +66,3 @@ export const fix = async (dir: string, options: FixOptions = {}) => {
 
   await pkgJson.save();
 };
-
-const makeExportPath = (name: string, ext = ".js") => `./dist/${name}${ext}`;
-
-const entryPointsToExports = (
-  entryPoints: NonNullable<TsupOptions["entry"]>,
-  { supportCjs }: FixOptions,
-) =>
-  Object.fromEntries(
-    Object.entries(entryPoints).map(([name]) => {
-      const esmPath = makeExportPath(name, ".js");
-      const entryName = name === "index" ? "." : `./${name}`;
-      if (supportCjs) {
-        const cjsPath = makeExportPath(name, ".cjs");
-        return [
-          entryName,
-          {
-            import: esmPath,
-            require: cjsPath,
-          },
-        ];
-      } else {
-        return [entryName, esmPath];
-      }
-    }),
-  );

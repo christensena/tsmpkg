@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 import { parseArgs } from "node:util";
-import { init } from "./init.js";
-import { dev } from "./dev.js";
-import { fix } from "./package.js";
-import { check } from "./check/packageJson.js";
+import { init } from "./init/index.js";
+import { dev } from "./dev/index.js";
+import { fix } from "./fix/index.js";
+import { check } from "./check/index.js";
 
 const args = parseArgs({
   tokens: true,
@@ -20,7 +20,7 @@ switch (args.positionals[0]) {
     break;
   }
   case "fix": {
-    await fix(process.cwd(), { supportCjs: true });
+    await fix(process.cwd());
     break;
   }
   case "check": {
