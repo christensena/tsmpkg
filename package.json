@@ -7,6 +7,7 @@
     "test": "pnpm run -r test",
     "clean": "pnpm run -r clean",
     "prepare": "is-ci || husky install",
+    "check": "pnpm clean && pnpm lint && pnpm test && pnpm build",
     "postinstall": "pnpm run -r --filter tsmpkg build && pnpm i --ignore-scripts && tsmpkg dev"
   },
   "private": true,
