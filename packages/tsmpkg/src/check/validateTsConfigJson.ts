@@ -1,10 +1,23 @@
-import { handleCheckErrors, readTsConfig } from "../shared/index.js";
+import {
+  displayValidationErrors,
+  InvalidTsConfigError,
+  readTsConfig,
+} from "../shared/index.js";
+
+const displayTsconfigValidationErrors = (errors: string[]) =>
+  displayValidationErrors("tsconfig.json", errors);
 
 export const validateTsConfigJson = async (dir: string) => {
-  const config = await readTsConfig(dir);
-  const errors = validateTsConfig(config);
-  handleCheckErrors("tsconfig.json", errors);
-  return errors;
+  try {
+    const config = await readTsConfig(dir);
+    const errors = validateTsConfig(config);
+    return displayTsconfigValidationErrors(errors);
+  } catch (err) {
+    if (err instanceof InvalidTsConfigError) {
+      return displayTsconfigValidationErrors([err.message]);
+    }
+    throw err;
+  }
 };
 
 export const validateTsConfig = (

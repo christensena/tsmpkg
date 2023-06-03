@@ -1,4 +1,4 @@
-export const handleCheckErrors = (context: string, errors: string[]) => {
+export const displayValidationErrors = (context: string, errors: string[]) => {
   if (errors.length === 0) return;
 
   console.warn(
@@ -8,4 +8,5 @@ export const handleCheckErrors = (context: string, errors: string[]) => {
   for (const error of errors) {
     console.warn(error);
   }
+  return errors;
 };

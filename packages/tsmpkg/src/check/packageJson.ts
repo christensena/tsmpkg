@@ -1,7 +1,7 @@
 import {
   cjsRequired,
+  displayValidationErrors,
   getPackageJsonContent,
-  handleCheckErrors,
 } from "../shared/index.js";
 import { PackageContent } from "../shared/types.js";
 import path from "node:path";
@@ -9,8 +9,7 @@ import path from "node:path";
 export const validatePackageJson = async (dir: string) => {
   const pkg = await getPackageJsonContent(dir);
   const errors = validatePackage(pkg);
-  handleCheckErrors("package.json", errors);
-  return errors;
+  return displayValidationErrors("package.json", errors);
 };
 
 export const validatePackage = (pkg: PackageContent) => {
