@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env node --enable-source-maps
 import { parseArgs } from "node:util";
 import { init } from "./init/index.js";
 import { dev } from "./dev/index.js";

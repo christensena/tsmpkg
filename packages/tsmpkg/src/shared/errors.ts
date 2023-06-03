@@ -1,12 +1,13 @@
-export const displayValidationErrors = (context: string, errors: string[]) => {
-  if (errors.length === 0) return;
+import chalk from "chalk";
 
-  console.warn(
-    `Errors were found in ${context}.\nTry running fix to resolve them.\n`,
-  );
+export const displayValidationErrors = (context: string, errors: string[]) => {
+  if (errors.length === 0) return errors;
+
+  console.warn(chalk.red(`Errors were found in ${context}.`));
+  console.info(chalk.dim("Try running fix to resolve them."));
 
   for (const error of errors) {
-    console.warn(error);
+    console.warn(chalk.red(error));
   }
   return errors;
 };
