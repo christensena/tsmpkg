@@ -7,7 +7,9 @@ import { getPackageJson } from "../shared/index.js";
 describe("packageJson", () => {
   let packageJson: Package;
 
-  const check = () => validatePackage(packageJson.content as PackageContent);
+  const check = () => [
+    ...validatePackage(packageJson.content as PackageContent),
+  ];
 
   beforeEach(async (ctx) => {
     if (!ctx.task.file?.filepath) {

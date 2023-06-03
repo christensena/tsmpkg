@@ -8,32 +8,28 @@ import path from "node:path";
 
 export const validatePackageJson = async (dir: string) => {
   const pkg = await getPackageJsonContent(dir);
-  const errors = validatePackage(pkg);
+  const errors = [...validatePackage(pkg)];
   return displayValidationErrors("package.json", errors);
 };
 
-export const validatePackage = (pkg: PackageContent) => {
-  const errors: string[] = [];
-
+export function* validatePackage(pkg: PackageContent) {
   const cjsSupported = cjsRequired(pkg);
   if (!pkg.main) {
     // https://nodejs.org/api/packages.html#package-entry-points
-    errors.push("`main` field must be provided.");
+    yield "`main` field must be provided.";
+  } else if (pkg.main && cjsSupported && path.extname(pkg.main) !== ".cjs") {
+    yield "`main` field should point to .cjs when cjs supported.";
   }
-  if (pkg.main && cjsSupported && path.extname(pkg.main) !== ".cjs") {
-    errors.push("`main` field should point to .cjs when cjs supported.");
-  }
+
   if (pkg.type !== "module") {
-    errors.push("`type` field must be `module`.");
+    yield "`type` field must be `module`.";
   }
 
   // TODO: better to attempt a path resolve
   if (
     pkg.files &&
-    !pkg?.files.find((f) => ["dist", "./dist", "dist/"].includes(f))
+    !pkg.files.find((f) => ["dist", "./dist", "dist/"].includes(f))
   ) {
-    errors.push("`files` must include `dist`");
+    yield "`files` must include `dist`";
   }
-
-  return errors;
-};
+}

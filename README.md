@@ -6,7 +6,7 @@ Package JSON
 
 Tsconfig
 
-- [ ] Use proper loader so resolves extends etc
+- [x] Use proper loader so resolves extends etc
 - [ ] Poke only essentials in on fix/init (and prompt first)
 
 Checks
@@ -22,7 +22,7 @@ Checks
 - Fix to fix checks e.g.
 
   - [x] Sync up exports with tsup (tsup wins)
-    - [ ] Use `outExension` lookup if set
+    - [ ] Use `outExtension` lookup if set (need to parse .js tho)
   - [ ] Corrections to package.json and tsconfig.json
 
 - Dev mode
@@ -54,4 +54,4 @@ Checks
   - [ ] Non monorepo support
   - [ ] Yarn/npm monorepo support?
   - [ ] New name
-  - [ ] Init
+  - [ ] Init from scratch

@@ -10,7 +10,7 @@ const displayTsconfigValidationErrors = (errors: string[]) =>
 export const validateTsConfigJson = async (dir: string) => {
   try {
     const config = await readTsConfig(dir);
-    const errors = validateTsConfig(config);
+    const errors = [...validateTsConfig(config)];
     return displayTsconfigValidationErrors(errors);
   } catch (err) {
     if (err instanceof InvalidTsConfigError) {
@@ -20,20 +20,21 @@ export const validateTsConfigJson = async (dir: string) => {
   }
 };
 
-export const validateTsConfig = (
+export function* validateTsConfig(
   config: Awaited<ReturnType<typeof readTsConfig>>,
-) => {
+) {
   if (!config) {
-    return ["tsconfig.json: not found."];
+    yield "tsconfig.json: not found.";
+    return;
   }
-  const errors: string[] = [];
+
   const { compilerOptions } = config;
   if (!compilerOptions) {
-    return ["no compilerOptions set."];
+    yield "no compilerOptions set.";
+    return;
   }
   // TODO: which types are valid? NodeNext and Node16 too?
   if (compilerOptions.module?.toLowerCase() !== "esnext") {
-    errors.push(`tsconfig.json: compilerOptions.module must be "ESNext"`);
+    yield `tsconfig.json: compilerOptions.module must be "ESNext"`;
   }
-  return errors;
-};
+}
