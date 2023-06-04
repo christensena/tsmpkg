@@ -1,6 +1,6 @@
 {
   "name": "tsmpkg",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Tool for setting up and maintaining pure esm module typescript packages",
   "type": "module",
   "files": [
@@ -14,7 +14,8 @@
     "clean": "rm -rf dist",
     "build": "tsup",
     "test": "vitest run",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "prepack": "pnpm build"
   },
   "keywords": [],
   "author": "Alan Christensen",
