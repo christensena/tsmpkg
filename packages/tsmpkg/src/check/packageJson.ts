@@ -15,8 +15,11 @@ export const validatePackageJson = async (dir: string) => {
 export function* validatePackage(pkg: PackageContent) {
   const cjsSupported = cjsRequired(pkg);
   if (!pkg.main) {
-    // https://nodejs.org/api/packages.html#package-entry-points
-    yield "`main` field must be provided.";
+    // only if an index entry point
+    if (pkg.tsup?.entry && "index" in pkg.tsup.entry) {
+      // https://nodejs.org/api/packages.html#package-entry-points
+      yield "`main` field must be provided when index entry point.";
+    }
   } else if (pkg.main && cjsSupported && path.extname(pkg.main) !== ".cjs") {
     yield "`main` field should point to .cjs when cjs supported.";
   }

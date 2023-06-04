@@ -34,13 +34,13 @@ describe("packageJson", () => {
       `);
     });
 
-    it("where main not specified", () => {
+    it("where main not specified and index entry point", () => {
       packageJson.update({
         main: undefined,
       });
       expect(check()).toMatchInlineSnapshot(`
         [
-          "\`main\` field must be provided.",
+          "\`main\` field must be provided when index entry point.",
         ]
       `);
     });
