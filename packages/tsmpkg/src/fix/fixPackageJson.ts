@@ -26,16 +26,6 @@ export const fixPackageJson = async (dir: string, options: FixOptions = {}) => {
     throw new Error("Entry points in tsup config must be an object.");
   }
 
-  const indexSrcPath = entryPoints["index"];
-  if (!indexSrcPath) {
-    throw new Error("Must have an `index` entry point in tsup config.");
-  }
-
-  const indexDistPath = makeExportPath("index");
-  const indexCjsDistPath = makeExportPath("index", ".cjs");
-
-  const tsmpkgVersion = "0.0.4";
-
   pkgJson.update({
     scripts: {
       ...pkg.scripts,
@@ -43,17 +33,21 @@ export const fixPackageJson = async (dir: string, options: FixOptions = {}) => {
       build: "tsup",
     },
     type: "module",
-    main: supportCjs ? indexCjsDistPath : indexDistPath,
+    main: entryPoints["index"]
+      ? supportCjs
+        ? makeExportPath("index", ".cjs")
+        : makeExportPath("index")
+      : undefined,
     exports: {
       ...(typeof pkg.exports === "object" ? pkg.exports : {}),
       ...entryPointsToExports(entryPoints, { supportCjs }),
     },
-    devDependencies: {
-      ...pkg.devDependencies,
-      tsup: "^6.7.0",
-      tsmpkg: `^${tsmpkgVersion}`,
-      typescript: "^5.0.4",
-    },
+    // devDependencies: {
+    //   ...pkg.devDependencies,
+    //   tsup: "^6.7.0",
+    //   tsmpkg: `^${tsmpkgVersion}`,
+    //   typescript: "^5.0.4",
+    // },
     // @ts-ignore
     tsup: {
       ...pkg.tsup,

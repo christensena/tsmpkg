@@ -1,5 +1,11 @@
 # tsmpkg
 
+## 0.0.7
+
+### Patch Changes
+
+- Allow non index entry (with no main)
+
 ## 0.0.6
 
 ### Patch Changes
