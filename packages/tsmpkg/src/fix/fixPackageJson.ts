@@ -3,6 +3,7 @@ import {
   getPackageJson,
   makeExportPath,
 } from "../shared/index.js";
+import chalk from "chalk";
 
 type FixOptions = {
   supportCjs?: boolean;
@@ -16,21 +17,20 @@ export const fixPackageJson = async (dir: string, options: FixOptions = {}) => {
     index: "./src/index.ts",
   };
 
-  const tsupExistingFormat = pkg.tsup?.format;
   const supportCjs =
-    options.supportCjs !== undefined
-      ? options.supportCjs
-      : tsupExistingFormat?.includes("cjs") ?? false;
+    options.supportCjs ?? pkg.tsup?.format?.includes("cjs") ?? false;
 
   if (!(typeof entryPoints === "object" && !Array.isArray(entryPoints))) {
     throw new Error("Entry points in tsup config must be an object.");
   }
 
+  console.info(chalk.dim`🛠️Fixing package.json`);
+
   pkgJson.update({
     scripts: {
       ...pkg.scripts,
       clean: "rm -rf dist",
-      build: "tsup",
+      prepack: "tsup",
     },
     type: "module",
     main: entryPoints["index"]
@@ -53,10 +53,12 @@ export const fixPackageJson = async (dir: string, options: FixOptions = {}) => {
       ...pkg.tsup,
       entry: entryPoints,
       clean: true,
-      format: tsupExistingFormat ?? supportCjs ? ["esm", "cjs"] : ["esm"],
+      format: supportCjs ? ["esm", "cjs"] : ["esm"],
       dts: true,
     },
   });
 
   await pkgJson.save();
+
+  console.info(chalk.dim`✅ Done.`);
 };

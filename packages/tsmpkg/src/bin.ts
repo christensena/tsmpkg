@@ -4,6 +4,7 @@ import { init } from "./init/index.js";
 import { dev } from "./dev/index.js";
 import { fix } from "./fix/index.js";
 import { check } from "./check/index.js";
+import chalk from "chalk";
 
 const args = parseArgs({
   tokens: true,
@@ -28,7 +29,7 @@ switch (args.positionals[0]) {
     break;
   }
   default: {
-    console.info("tsmpkg init|dev|fix");
+    console.info("Usage: " + chalk.bgGray`tsmpkg init|dev|fix|check`);
     break;
   }
 }

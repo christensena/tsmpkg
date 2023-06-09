@@ -1,15 +1,16 @@
 import path from "node:path";
 import fs from "node:fs/promises";
 import { ensureDir, remove } from "fs-extra/esm";
-import { findWorkspaceDir } from "@pnpm/find-workspace-dir";
 import { findWorkspacePackagesNoCheck } from "@pnpm/find-workspace-packages";
 import type { Options as TsupOptions } from "tsup";
 import {
   cjsRequired,
   getPackageJsonContent,
+  getWorkspaceDir,
   isTsmpkg,
 } from "../shared/index.js";
 import { validate } from "../check/index.js";
+import chalk from "chalk";
 
 const defaultTsupEntry = { index: "./src/index.ts" };
 
@@ -24,25 +25,22 @@ const getEntryPoints = (tsup?: TsupOptions) => {
 };
 
 export const dev = async (dir: string) => {
-  const workspaceDir = await findWorkspaceDir(dir);
-  if (!workspaceDir) {
-    console.error(
-      `Workspace dir could not be found from ${dir}.\n'dev' only needed in monorepos.\nOnly pnpm monorepos currently supported.`,
-    );
-    process.exit(1);
-  }
-
+  const workspaceDir = await getWorkspaceDir(dir);
   const projects = (await findWorkspacePackagesNoCheck(workspaceDir)).filter(
     (p) => p.dir !== workspaceDir && isTsmpkg(p),
   );
   for (const proj of projects) {
-    // console.log("proj: %O", proj);
-    await devPkg(proj.dir);
+    await devPkg(proj.dir, { workspaceDir });
   }
+  console.info(chalk.dim`✅ Done.`);
 };
 
-export const devPkg = async (dir: string) => {
-  const valid = await validate(dir);
+type DevOptions = {
+  workspaceDir: string;
+};
+
+export const devPkg = async (dir: string, options: DevOptions) => {
+  const valid = await validate(dir, options);
   if (!valid) {
     process.exit(1);
   }
@@ -52,6 +50,12 @@ export const devPkg = async (dir: string) => {
   const distPath = path.join(dir, "dist");
   await remove(distPath);
   await ensureDir(distPath);
+
+  console.info(
+    chalk.dim`🛠️Generating dev mode symlinks for %s in %s`,
+    chalk.bgBlackBright(pkg.name),
+    chalk.bgGray(path.relative(options.workspaceDir, distPath)),
+  );
 
   const entryPoints = getEntryPoints(pkg.tsup);
 
