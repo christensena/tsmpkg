@@ -5,9 +5,7 @@ export default defineConfig({
     bin: "src/bin.ts",
   },
   minify: true,
-  sourcemap: true,
   target: "node18",
   format: "esm",
   clean: true,
-  dts: true,
 });
