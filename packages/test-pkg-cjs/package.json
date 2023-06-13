@@ -1,0 +1,41 @@
+{
+  "name": "test-pkg-cjs",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "clean": "rm -rf dist",
+    "prepack": "tsup"
+  },
+  "main": "./dist/index.cjs",
+  "exports": {
+    ".": {
+      "import": "./dist/index.cjs",
+      "require": "./dist/index.cjs"
+    },
+    "./schemas": {
+      "import": "./dist/schemas.cjs",
+      "require": "./dist/schemas.cjs"
+    }
+  },
+  "tsup": {
+    "entry": {
+      "index": "./src/index.ts",
+      "schemas": "./src/schemas/index.ts"
+    },
+    "clean": true,
+    "format": [
+      "cjs"
+    ],
+    "dts": true
+  },
+  "devDependencies": {
+    "tsmpkg": "workspace:^",
+    "tsup": "^6.7.0",
+    "typescript": "^5.1.3"
+  },
+  "private": true,
+  "volta": {
+    "extends": "../../package.json"
+  },
+  "type": "module"
+}

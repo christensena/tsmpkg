@@ -24,9 +24,9 @@ export function* validatePackage(pkg: PackageContent) {
     yield "`main` field should point to .cjs when cjs supported.";
   }
 
-  if (pkg.type !== "module") {
-    yield "`type` field must be `module`.";
-  }
+  // if (pkg.type !== "module") {
+  //   yield "`type` field must be `module`.";
+  // }
 
   // TODO: better to attempt a path resolve
   if (

@@ -1,7 +1,9 @@
 import {
+  cjsRequired,
   entryPointsToExports,
   getPackageJson,
   makeExportPath,
+  requiredFormats,
 } from "../shared/index.js";
 import chalk from "chalk";
 
@@ -17,8 +19,8 @@ export const fixPackageJson = async (dir: string, options: FixOptions = {}) => {
     index: "./src/index.ts",
   };
 
-  const supportCjs =
-    options.supportCjs ?? pkg.tsup?.format?.includes("cjs") ?? false;
+  const formats = requiredFormats(pkg);
+  const supportCjs = cjsRequired(pkg);
 
   if (!(typeof entryPoints === "object" && !Array.isArray(entryPoints))) {
     throw new Error("Entry points in tsup config must be an object.");
@@ -40,7 +42,7 @@ export const fixPackageJson = async (dir: string, options: FixOptions = {}) => {
       : undefined,
     exports: {
       ...(typeof pkg.exports === "object" ? pkg.exports : {}),
-      ...entryPointsToExports(entryPoints, { supportCjs }),
+      ...entryPointsToExports(entryPoints, { formats }),
     },
     // devDependencies: {
     //   ...pkg.devDependencies,
@@ -53,7 +55,7 @@ export const fixPackageJson = async (dir: string, options: FixOptions = {}) => {
       ...pkg.tsup,
       entry: entryPoints,
       clean: true,
-      format: supportCjs ? ["esm", "cjs"] : ["esm"],
+      format: formats,
       dts: true,
     },
   });

@@ -5,18 +5,19 @@ export const makeExportPath = (name: string, ext = ".js") =>
 
 export const entryPointsToExports = (
   entryPoints: NonNullable<TsupOptions["entry"]>,
-  { supportCjs }: { supportCjs?: boolean },
+  { formats }: { formats: ("cjs" | "esm")[] },
 ) =>
   Object.fromEntries(
     Object.entries(entryPoints).map(([name]) => {
       const esmPath = makeExportPath(name, ".js");
       const entryName = name === "index" ? "." : `./${name}`;
-      if (supportCjs) {
+      if (formats.includes("cjs")) {
         const cjsPath = makeExportPath(name, ".cjs");
         return [
           entryName,
           {
-            import: esmPath,
+            // TODO: check cjs case. might be wrong, e.g "default"?
+            import: formats.includes("esm") ? esmPath : cjsPath,
             require: cjsPath,
           },
         ];

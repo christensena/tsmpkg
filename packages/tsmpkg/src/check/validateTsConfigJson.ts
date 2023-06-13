@@ -34,7 +34,7 @@ export function* validateTsConfig(
     return;
   }
   // TODO: which types are valid? NodeNext and Node16 too?
-  if (compilerOptions.module?.toLowerCase() !== "esnext") {
-    yield `tsconfig.json: compilerOptions.module must be "ESNext"`;
-  }
+  // if (compilerOptions.module?.toLowerCase() !== "esnext") {
+  //   yield `tsconfig.json: compilerOptions.module must be "ESNext"`;
+  // }
 }

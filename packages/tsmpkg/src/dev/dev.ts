@@ -4,10 +4,10 @@ import { ensureDir, remove } from "fs-extra/esm";
 import { findWorkspacePackagesNoCheck } from "@pnpm/find-workspace-packages";
 import type { Options as TsupOptions } from "tsup";
 import {
-  cjsRequired,
   getPackageJsonContent,
   getWorkspaceDir,
   isTsmpkg,
+  requiredFormats,
 } from "../shared/index.js";
 import { validate } from "../check/index.js";
 import chalk from "chalk";
@@ -45,7 +45,10 @@ export const devPkg = async (dir: string, options: DevOptions) => {
     process.exit(1);
   }
   const pkg = await getPackageJsonContent(dir);
-  const supportCjs = cjsRequired(pkg);
+  const formats = requiredFormats(pkg);
+
+  type Ext = ".js" | ".cjs";
+  const extensions = formats.map((f): Ext => (f === "cjs" ? ".cjs" : ".js"));
 
   const distPath = path.join(dir, "dist");
   await remove(distPath);
@@ -59,13 +62,13 @@ export const devPkg = async (dir: string, options: DevOptions) => {
 
   const entryPoints = getEntryPoints(pkg.tsup);
 
-  const makeLinks = async (name: string, target: string, ext: "js" | "cjs") => {
+  const makeLinks = async (name: string, target: string, ext: Ext) => {
     await fs.symlink(
       path.join(dir, target),
-      path.join(distPath, `${name}.${ext}`),
+      path.join(distPath, `${name}${ext}`),
     );
 
-    const baseName = ext == "js" ? name : `${name}.${ext}`;
+    const baseName = ext == ".js" ? name : `${name}${ext}`;
     await fs.writeFile(
       path.join(distPath, `${baseName}.d.ts`),
       `export * from ".${target.replace(
@@ -84,9 +87,8 @@ export const devPkg = async (dir: string, options: DevOptions) => {
     if (!target.startsWith("./")) {
       throw new Error(`Entry points must start with ./`);
     }
-    await makeLinks(name, target, "js");
-    if (supportCjs) {
-      await makeLinks(name, target, "cjs");
+    for (const ext of extensions) {
+      await makeLinks(name, target, ext);
     }
   }
 };
