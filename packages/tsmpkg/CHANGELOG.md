@@ -1,5 +1,11 @@
 # tsmpkg
 
+## 0.0.11
+
+### Patch Changes
+
+- 37e1252: Non-esm (cjs only) compat
+
 ## 0.0.10
 
 ### Patch Changes
