@@ -68,19 +68,20 @@ export const devPkg = async (dir: string, options: DevOptions) => {
       path.join(distPath, `${name}${ext}`),
     );
 
-    const baseName = ext == ".js" ? name : `${name}${ext}`;
-    await fs.writeFile(
-      path.join(distPath, `${baseName}.d.ts`),
-      `export * from ".${target.replace(
-        ".ts",
-        ".js",
-      )}";\n//# sourceMappingURL=${baseName}.d.ts.map`,
-      "utf-8",
-    );
-    await fs.writeFile(
-      path.join(distPath, `${baseName}.d.ts.map`),
-      `{"version":3,"file":"${baseName}.d.ts","sourceRoot":"","sources":[".${target}"],"names":[],"mappings":"AAAA"}\n`,
-    );
+    if (ext === ".js") {
+      await fs.writeFile(
+        path.join(distPath, `${name}.d.ts`),
+        `export * from ".${target.replace(
+          ".ts",
+          ".js",
+        )}";\n//# sourceMappingURL=${name}.d.ts.map`,
+        "utf-8",
+      );
+      await fs.writeFile(
+        path.join(distPath, `${name}.d.ts.map`),
+        `{"version":3,"file":"${name}.d.ts","sourceRoot":"","sources":[".${target}"],"names":[],"mappings":"AAAA"}\n`,
+      );
+    }
   };
 
   for (const [name, target] of Object.entries(entryPoints)) {

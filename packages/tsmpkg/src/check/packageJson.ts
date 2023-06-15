@@ -20,7 +20,11 @@ export function* validatePackage(pkg: PackageContent) {
       // https://nodejs.org/api/packages.html#package-entry-points
       yield "`main` field must be provided when index entry point.";
     }
-  } else if (pkg.main && cjsSupported && path.extname(pkg.main) !== ".cjs") {
+  } else if (
+    pkg.main &&
+    cjsSupported &&
+    ![".cjs", ""].includes(path.extname(pkg.main))
+  ) {
     yield "`main` field should point to .cjs when cjs supported.";
   }
 

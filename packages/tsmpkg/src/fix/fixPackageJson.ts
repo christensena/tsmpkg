@@ -34,11 +34,11 @@ export const fixPackageJson = async (dir: string, options: FixOptions = {}) => {
       clean: "rm -rf dist",
       prepack: "tsup",
     },
-    type: "module",
+    // type: "module",
     main: entryPoints["index"]
       ? supportCjs
-        ? makeExportPath("index", ".cjs")
-        : makeExportPath("index")
+        ? makeExportPath("index", "") // no ext as tsup won't output .cjs.d.ts
+        : makeExportPath("index", ".js")
       : undefined,
     exports: {
       ...(typeof pkg.exports === "object" ? pkg.exports : {}),

@@ -1,6 +1,6 @@
 import { Options as TsupOptions } from "tsup";
 
-export const makeExportPath = (name: string, ext = ".js") =>
+export const makeExportPath = (name: string, ext = "") =>
   `./dist/${name}${ext}`;
 
 export const entryPointsToExports = (
@@ -12,7 +12,7 @@ export const entryPointsToExports = (
       const esmPath = makeExportPath(name, ".js");
       const entryName = name === "index" ? "." : `./${name}`;
       if (formats.includes("cjs")) {
-        const cjsPath = makeExportPath(name, ".cjs");
+        const cjsPath = makeExportPath(name, ""); // no ext as tsup won't output .cjs.d.ts
         return [
           entryName,
           {
