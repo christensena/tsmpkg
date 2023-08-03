@@ -47,8 +47,8 @@ export const devPkg = async (dir: string, options: DevOptions) => {
   const pkg = await getPackageJsonContent(dir);
   const formats = requiredFormats(pkg);
 
-  type Ext = ".js" | ".cjs";
-  const extensions = formats.map((f): Ext => (f === "cjs" ? ".cjs" : ".js"));
+  type Ext = ".js" | ".mjs";
+  const extensions = formats.map((f): Ext => (f === "cjs" ? ".js" : ".mjs"));
 
   const distPath = path.join(dir, "dist");
   await remove(distPath);

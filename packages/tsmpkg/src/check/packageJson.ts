@@ -23,9 +23,9 @@ export function* validatePackage(pkg: PackageContent) {
   } else if (
     pkg.main &&
     cjsSupported &&
-    ![".cjs", ""].includes(path.extname(pkg.main))
+    ![".js", ""].includes(path.extname(pkg.main))
   ) {
-    yield "`main` field should point to .cjs when cjs supported.";
+    yield "`main` field should point to .js when cjs supported.";
   }
 
   // if (pkg.type !== "module") {

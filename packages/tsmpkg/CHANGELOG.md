@@ -1,5 +1,11 @@
 # tsmpkg
 
+## 0.1.0
+
+### Minor Changes
+
+- switch extensions to match latest tsup
+
 ## 0.0.12
 
 ### Patch Changes

@@ -45,9 +45,9 @@ describe("packageJson", () => {
       `);
     });
 
-    it("where cjs supported but main not pointing to cjs version", () => {
+    it("where cjs supported but main not pointing to .js version", () => {
       packageJson.update({
-        main: "dist/index.js",
+        main: "dist/index.mjs",
         // @ts-ignore
         tsup: {
           ...packageJson.content.tsup,
@@ -56,7 +56,7 @@ describe("packageJson", () => {
       });
       expect(check()).toMatchInlineSnapshot(`
         [
-          "\`main\` field should point to .cjs when cjs supported.",
+          "\`main\` field should point to .js when cjs supported.",
         ]
       `);
     });

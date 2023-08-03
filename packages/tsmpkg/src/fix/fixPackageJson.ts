@@ -37,8 +37,8 @@ export const fixPackageJson = async (dir: string, options: FixOptions = {}) => {
     // type: "module",
     main: entryPoints["index"]
       ? supportCjs
-        ? makeExportPath("index", "") // no ext as tsup won't output .cjs.d.ts
-        : makeExportPath("index", ".js")
+        ? makeExportPath("index", ".js")
+        : makeExportPath("index", ".mjs")
       : undefined,
     exports: {
       ...(typeof pkg.exports === "object" ? pkg.exports : {}),

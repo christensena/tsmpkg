@@ -7,16 +7,15 @@
     "prepack": "tsup"
   },
   "type": "module",
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
+  "main": "./dist/index.js",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
     },
     "./schemas": {
-      "import": "./dist/schemas.js",
-      "require": "./dist/schemas.cjs"
+      "import": "./dist/schemas.mjs",
+      "require": "./dist/schemas.js"
     }
   },
   "tsup": {
@@ -33,8 +32,8 @@
   },
   "devDependencies": {
     "tsmpkg": "workspace:^",
-    "tsup": "^6.7.0",
-    "typescript": "^5.1.3"
+    "tsup": "^7.2.0",
+    "typescript": "^5.1.6"
   },
   "private": true,
   "volta": {

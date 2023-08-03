@@ -9,10 +9,10 @@ export const entryPointsToExports = (
 ) =>
   Object.fromEntries(
     Object.entries(entryPoints).map(([name]) => {
-      const esmPath = makeExportPath(name, ".js");
+      const esmPath = makeExportPath(name, ".mjs");
       const entryName = name === "index" ? "." : `./${name}`;
       if (formats.includes("cjs")) {
-        const cjsPath = makeExportPath(name, ""); // no ext as tsup won't output .cjs.d.ts
+        const cjsPath = makeExportPath(name, ".js");
         return [
           entryName,
           {
