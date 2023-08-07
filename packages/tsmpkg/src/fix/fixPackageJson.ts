@@ -7,11 +7,7 @@ import {
 } from "../shared/index.js";
 import chalk from "chalk";
 
-type FixOptions = {
-  supportCjs?: boolean;
-};
-
-export const fixPackageJson = async (dir: string, options: FixOptions = {}) => {
+export const fixPackageJson = async (dir: string) => {
   const pkgJson = await getPackageJson(dir);
   const pkg = pkgJson.content;
 
