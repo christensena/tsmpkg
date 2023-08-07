@@ -58,11 +58,13 @@ Checks
 
 Issues:
 
-- [ ] .mjs or .cjs depends on type: module (latter if set).
+- [x] .mjs or .cjs depends on type: module (latter if set).
   - [x] behave differently for dev mode accordingly
   - [x] check for this on main
-  - [ ] check for this in exports
-  - [ ] autofix on exports
-  - [ ] autofix on main
+  - [x] check for this in exports
+    - [x] object shape (require, imports)
+    - [ ] single inline string shape
+  - [x] autofix on exports
+  - [x] autofix on main
 - [ ] would be great to generate entry-point/package.json and validate for
       legacy

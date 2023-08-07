@@ -43,7 +43,7 @@ describe("packageJson", () => {
         ["dist/", "module", ".cjs"],
         ["dist", "module", ".cjs"],
       ])(
-        "package.json main pointing to %s %s -> %s",
+        "main pointing to %s on module of type %s should have file extension %s",
         (main, type, expected) => {
           packageJson.update({
             main,
@@ -58,6 +58,39 @@ describe("packageJson", () => {
             `"main" field should have "${expected}" extension when commonjs supported on package of type ${
               type ?? "commonjs"
             }.`,
+          );
+        },
+      );
+
+      test.each([
+        ["module", ".js", ".js", ".cjs", ".js"],
+        ["commonjs", ".cjs", ".js", ".js", ".mjs"],
+        ["module", ".js", ".mjs", ".cjs", ".js"],
+        ["commonjs", ".cjs", ".mjs", ".js", ".mjs"],
+      ])(
+        "exports on module of type %s, where require extension %s and import %s should have require ext %s, import %s",
+        (pkgType, actualRequireExt, actualImportExt, requireExt, importExt) => {
+          const entryPath = ".";
+          packageJson.update({
+            type: pkgType as "commonjs" | "module" | undefined,
+            main: `./dist/index${requireExt}`,
+            exports: {
+              [entryPath]: {
+                import: `./dist/index${actualImportExt}`,
+                require: `./dist/index${actualRequireExt}`,
+              },
+            },
+            // @ts-ignore
+            tsup: {
+              ...packageJson.content.tsup,
+              format: ["esm", "cjs"],
+            },
+          });
+          console.log("%o", check());
+          expect(check()).toContain(
+            `"exports" entry "${entryPath}": should have "require" extension "${requireExt}" and "import" extension "${importExt}" on packages of type "${
+              pkgType ?? "commonjs"
+            }".`,
           );
         },
       );

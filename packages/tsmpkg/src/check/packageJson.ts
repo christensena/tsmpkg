@@ -15,7 +15,8 @@ export const validatePackageJson = async (dir: string) => {
 
 export function* validatePackage(pkg: PackageContent) {
   const cjsSupported = cjsRequired(pkg);
-  const extForCjs: string = extensionForFormatCreate(pkg)("cjs");
+  const extensionForFormat = extensionForFormatCreate(pkg);
+  const extForCjs: string = extensionForFormat("cjs");
   if (!pkg.main) {
     // only if an index entry point
     if (pkg.tsup?.entry && "index" in pkg.tsup.entry) {
@@ -26,6 +27,31 @@ export function* validatePackage(pkg: PackageContent) {
     yield `"main" field should have "${extForCjs}" extension when commonjs supported on package of type ${
       pkg.type ?? "commonjs"
     }.`;
+  }
+
+  if (pkg.exports) {
+    const importExt = extensionForFormat("esm");
+    const requireExt = extensionForFormat("cjs");
+
+    for (const [entryPath, value] of Object.entries(pkg.exports)) {
+      if (!(value && typeof value === "object")) continue;
+
+      const badEsm =
+        "import" in value &&
+        value["import"] &&
+        typeof value["import"] === "string" &&
+        path.extname(value["import"]) !== importExt;
+      const badCjs =
+        "require" in value &&
+        value["require"] &&
+        typeof value["require"] === "string" &&
+        path.extname(value["require"]) !== requireExt;
+      if (badEsm || badCjs) {
+        yield `"exports" entry "${entryPath}": should have "require" extension "${requireExt}" and "import" extension "${importExt}" on packages of type "${
+          pkg.type ?? "commonjs"
+        }".`;
+      }
+    }
   }
 
   // TODO: better to attempt a path resolve
