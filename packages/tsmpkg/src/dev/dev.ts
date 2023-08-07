@@ -7,10 +7,11 @@ import {
   getPackageJsonContent,
   getWorkspaceDir,
   isTsmpkg,
-  requiredFormats,
+  requiredExtensions,
 } from "../shared/index.js";
 import { validate } from "../check/index.js";
 import chalk from "chalk";
+import { Extension } from "../shared/types.js";
 
 const defaultTsupEntry = { index: "./src/index.ts" };
 
@@ -45,10 +46,7 @@ export const devPkg = async (dir: string, options: DevOptions) => {
     process.exit(1);
   }
   const pkg = await getPackageJsonContent(dir);
-  const formats = requiredFormats(pkg);
-
-  type Ext = ".js" | ".mjs";
-  const extensions = formats.map((f): Ext => (f === "cjs" ? ".js" : ".mjs"));
+  const extensions = requiredExtensions(pkg);
 
   const distPath = path.join(dir, "dist");
   await remove(distPath);
@@ -62,7 +60,7 @@ export const devPkg = async (dir: string, options: DevOptions) => {
 
   const entryPoints = getEntryPoints(pkg.tsup);
 
-  const makeLinks = async (name: string, target: string, ext: Ext) => {
+  const makeLinks = async (name: string, target: string, ext: Extension) => {
     await fs.symlink(
       path.join(dir, target),
       path.join(distPath, `${name}${ext}`),

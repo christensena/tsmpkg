@@ -1,6 +1,6 @@
 {
   "name": "tsmpkg",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Tool for setting up and maintaining pure esm module typescript packages",
   "type": "module",
   "files": [

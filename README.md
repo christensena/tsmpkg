@@ -55,3 +55,14 @@ Checks
   - [ ] Yarn/npm monorepo support?
   - [ ] New name
   - [ ] Init from scratch
+
+Issues:
+
+- [ ] .mjs or .cjs depends on type: module (latter if set).
+  - [x] behave differently for dev mode accordingly
+  - [x] check for this on main
+  - [ ] check for this in exports
+  - [ ] autofix on exports
+  - [ ] autofix on main
+- [ ] would be great to generate entry-point/package.json and validate for
+      legacy

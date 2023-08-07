@@ -1,5 +1,11 @@
 # tsmpkg
 
+## 0.1.1
+
+### Patch Changes
+
+- Correct extension given package.json type
+
 ## 0.1.0
 
 ### Minor Changes

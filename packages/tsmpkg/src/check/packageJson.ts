@@ -1,6 +1,7 @@
 import {
   cjsRequired,
   displayValidationErrors,
+  extensionForFormatCreate,
   getPackageJsonContent,
 } from "../shared/index.js";
 import { PackageContent } from "../shared/types.js";
@@ -14,23 +15,18 @@ export const validatePackageJson = async (dir: string) => {
 
 export function* validatePackage(pkg: PackageContent) {
   const cjsSupported = cjsRequired(pkg);
+  const extForCjs: string = extensionForFormatCreate(pkg)("cjs");
   if (!pkg.main) {
     // only if an index entry point
     if (pkg.tsup?.entry && "index" in pkg.tsup.entry) {
       // https://nodejs.org/api/packages.html#package-entry-points
       yield "`main` field must be provided when index entry point.";
     }
-  } else if (
-    pkg.main &&
-    cjsSupported &&
-    ![".js", ""].includes(path.extname(pkg.main))
-  ) {
-    yield "`main` field should point to .js when cjs supported.";
+  } else if (cjsSupported && path.extname(pkg.main) !== extForCjs) {
+    yield `"main" field should have "${extForCjs}" extension when commonjs supported on package of type ${
+      pkg.type ?? "commonjs"
+    }.`;
   }
-
-  // if (pkg.type !== "module") {
-  //   yield "`type` field must be `module`.";
-  // }
 
   // TODO: better to attempt a path resolve
   if (

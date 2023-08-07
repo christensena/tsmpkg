@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, test } from "vitest";
 import { validatePackage } from "../check/packageJson.js";
 import path from "node:path";
 import { Package, PackageContent } from "../shared/types.js";
@@ -23,17 +23,6 @@ describe("packageJson", () => {
   });
 
   describe("check should return error", () => {
-    it.skip("where type not specified", () => {
-      packageJson.update({
-        type: undefined,
-      });
-      expect(check()).toMatchInlineSnapshot(`
-        [
-          "\`type\` field must be \`module\`.",
-        ]
-      `);
-    });
-
     it("where main not specified and index entry point", () => {
       packageJson.update({
         main: undefined,
@@ -45,20 +34,33 @@ describe("packageJson", () => {
       `);
     });
 
-    it("where cjs supported but main not pointing to .js version", () => {
-      packageJson.update({
-        main: "dist/index.mjs",
-        // @ts-ignore
-        tsup: {
-          ...packageJson.content.tsup,
-          format: ["esm", "cjs"],
+    describe("where multiple formats and commonjs supported", () => {
+      test.each([
+        ["dist/index.js", "module", ".cjs"],
+        ["dist/index.cjs", "commonjs", ".js"],
+        ["dist/index.cjs", undefined, ".js"],
+        ["dist/index.mjs", "module", ".cjs"],
+        ["dist/", "module", ".cjs"],
+        ["dist", "module", ".cjs"],
+      ])(
+        "package.json main pointing to %s %s -> %s",
+        (main, type, expected) => {
+          packageJson.update({
+            main,
+            type: type as "commonjs" | "module" | undefined,
+            // @ts-ignore
+            tsup: {
+              ...packageJson.content.tsup,
+              format: ["esm", "cjs"],
+            },
+          });
+          expect(check()).toContain(
+            `"main" field should have "${expected}" extension when commonjs supported on package of type ${
+              type ?? "commonjs"
+            }.`,
+          );
         },
-      });
-      expect(check()).toMatchInlineSnapshot(`
-        [
-          "\`main\` field should point to .js when cjs supported.",
-        ]
-      `);
+      );
     });
 
     it("where files does not have dist/", () => {

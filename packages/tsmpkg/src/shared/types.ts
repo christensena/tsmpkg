@@ -8,3 +8,7 @@ export type PackageContent = NPMCliPackageJson["content"] & {
 export type Package = Omit<NPMCliPackageJson, "content"> & {
   content: PackageContent;
 };
+
+export type Extension = ".js" | ".mjs" | ".cjs";
+
+export type Format = "esm" | "cjs";
