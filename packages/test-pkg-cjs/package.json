@@ -34,6 +34,5 @@
   "private": true,
   "volta": {
     "extends": "../../package.json"
-  },
-  "type": "module"
+  }
 }
