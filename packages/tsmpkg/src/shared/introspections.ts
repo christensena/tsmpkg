@@ -1,16 +1,21 @@
-import { Extension, Format, PackageContent } from "./types.js";
+import { Extension, Format, PackageContent, PkgType } from "./types.js";
 import { Project } from "@pnpm/find-workspace-packages";
 
 export const cjsRequired = (pkg: PackageContent) =>
   requiredFormats(pkg).includes("cjs");
 
-export const requiredFormats = (pkg: PackageContent): ("cjs" | "esm")[] => {
-  const format = (pkg.tsup?.format as "cjs" | "esm" | undefined) ?? "esm";
-  return Array.isArray(format) ? format : [format];
+export const requiredFormats = (pkg: PackageContent): Format[] => {
+  const format = (pkg.tsup?.format as Format | undefined) ?? "esm";
+  return (Array.isArray(format) ? format : [format]).filter(
+    (f) => f !== "iife",
+  );
 };
 
-export const extensionForFormatCreate = (pkg: PackageContent) => {
-  const esmMode = pkg.type === "module";
+export const extensionForFormatCreate = (
+  pkg: Pick<PackageContent, "type"> | PkgType | undefined = "commonjs",
+) => {
+  const pkgType = typeof pkg === "string" ? pkg : pkg["type"] ?? "commonjs";
+  const esmMode = pkgType === "module";
   return (format: Format): Extension => {
     switch (format) {
       case "cjs":

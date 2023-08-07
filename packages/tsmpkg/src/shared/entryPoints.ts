@@ -1,28 +1,31 @@
 import { Options as TsupOptions } from "tsup";
+import { Extension, Format, PkgType } from "./types.js";
+import { extensionForFormatCreate } from "./introspections.js";
 
-export const makeExportPath = (name: string, ext = "") =>
+export const makeExportPath = (name: string, ext: Extension) =>
   `./dist/${name}${ext}`;
 
 export const entryPointsToExports = (
   entryPoints: NonNullable<TsupOptions["entry"]>,
-  { formats }: { formats: ("cjs" | "esm")[] },
-) =>
-  Object.fromEntries(
+  { formats, pkgType }: { formats: Format[]; pkgType: PkgType },
+) => {
+  const extensionForFormat = extensionForFormatCreate(pkgType);
+  return Object.fromEntries(
     Object.entries(entryPoints).map(([name]) => {
-      const esmPath = makeExportPath(name, ".mjs");
       const entryName = name === "index" ? "." : `./${name}`;
-      if (formats.includes("cjs")) {
-        const cjsPath = makeExportPath(name, ".js");
+      if (formats.length === 1 && formats[0] === "cjs") {
         return [
           entryName,
-          {
-            // TODO: check cjs case. might be wrong, e.g "default"?
-            import: formats.includes("esm") ? esmPath : cjsPath,
-            require: cjsPath,
-          },
+          makeExportPath(name, extensionForFormat(formats[0])),
         ];
-      } else {
-        return [entryName, esmPath];
       }
+      return [
+        entryName,
+        {
+          import: makeExportPath(name, extensionForFormat("esm")),
+          require: makeExportPath(name, extensionForFormat("cjs")),
+        },
+      ];
     }),
   );
+};

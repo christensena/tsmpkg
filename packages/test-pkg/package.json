@@ -10,12 +10,12 @@
   "main": "./dist/index.cjs",
   "exports": {
     ".": {
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
     },
     "./schemas": {
-      "import": "./dist/schemas.mjs",
-      "require": "./dist/schemas.js"
+      "import": "./dist/schemas.js",
+      "require": "./dist/schemas.cjs"
     }
   },
   "tsup": {

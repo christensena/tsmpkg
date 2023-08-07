@@ -1,6 +1,7 @@
 import {
   cjsRequired,
   entryPointsToExports,
+  extensionForFormatCreate,
   getPackageJson,
   makeExportPath,
   requiredFormats,
@@ -24,6 +25,7 @@ export const fixPackageJson = async (dir: string) => {
 
   console.info(chalk.dim`🛠️Fixing package.json`);
 
+  const extensionForFormat = extensionForFormatCreate(pkg);
   pkgJson.update({
     scripts: {
       ...pkg.scripts,
@@ -33,13 +35,13 @@ export const fixPackageJson = async (dir: string) => {
     // type: "module",
     main: entryPoints["index"]
       ? supportCjs
-        ? makeExportPath("index", ".js")
-        : makeExportPath("index", ".mjs")
+        ? makeExportPath("index", extensionForFormat("cjs"))
+        : makeExportPath("index", extensionForFormat("esm"))
       : undefined,
-    exports: {
-      ...(typeof pkg.exports === "object" ? pkg.exports : {}),
-      ...entryPointsToExports(entryPoints, { formats }),
-    },
+    exports: entryPointsToExports(entryPoints, {
+      formats,
+      pkgType: pkg.type ?? "commonjs",
+    }),
     // devDependencies: {
     //   ...pkg.devDependencies,
     //   tsup: "^6.7.0",
