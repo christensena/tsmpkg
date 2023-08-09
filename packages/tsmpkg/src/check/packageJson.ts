@@ -23,11 +23,7 @@ export function* validatePackage(pkg: PackageContent) {
       // https://nodejs.org/api/packages.html#package-entry-points
       yield "`main` field must be provided when index entry point.";
     }
-  } else if (
-    cjsSupported &&
-    path.extname(pkg.main) != "" &&
-    path.extname(pkg.main) !== extForCjs
-  ) {
+  } else if (cjsSupported && path.extname(pkg.main) !== extForCjs) {
     yield `"main" field should have "${extForCjs}" extension when commonjs supported on package of type ${
       pkg.type ?? "commonjs"
     }.`;

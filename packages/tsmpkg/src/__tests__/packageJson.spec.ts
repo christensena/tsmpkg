@@ -40,6 +40,9 @@ describe("packageJson", () => {
         ["dist/index.cjs", "commonjs", ".js"],
         ["dist/index.cjs", undefined, ".js"],
         ["dist/index.mjs", "module", ".cjs"],
+        ["dist/index", "module", ".cjs"],
+        ["dist/", "module", ".cjs"],
+        ["dist", "module", ".cjs"],
       ])(
         "main pointing to %s on module of type %s should have file extension %s",
         (main, type, expected) => {

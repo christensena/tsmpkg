@@ -4,6 +4,7 @@ import { ensureDir, remove } from "fs-extra/esm";
 import { findWorkspacePackagesNoCheck } from "@pnpm/find-workspace-packages";
 import type { Options as TsupOptions } from "tsup";
 import {
+  dtsExtensionFromExtension,
   getPackageJsonContent,
   getWorkspaceDir,
   isTsmpkg,
@@ -66,20 +67,19 @@ export const devPkg = async (dir: string, options: DevOptions) => {
       path.join(distPath, `${name}${ext}`),
     );
 
-    if (ext === ".js") {
-      await fs.writeFile(
-        path.join(distPath, `${name}.d.ts`),
-        `export * from ".${target.replace(
-          ".ts",
-          ".js",
-        )}";\n//# sourceMappingURL=${name}.d.ts.map`,
-        "utf-8",
-      );
-      await fs.writeFile(
-        path.join(distPath, `${name}.d.ts.map`),
-        `{"version":3,"file":"${name}.d.ts","sourceRoot":"","sources":[".${target}"],"names":[],"mappings":"AAAA"}\n`,
-      );
-    }
+    const dtsExt = dtsExtensionFromExtension(ext);
+    await fs.writeFile(
+      path.join(distPath, `${name}${dtsExt}`),
+      `export * from ".${target.replace(
+        ".ts",
+        ".js",
+      )}";\n//# sourceMappingURL=${name}${dtsExt}.map`,
+      "utf-8",
+    );
+    await fs.writeFile(
+      path.join(distPath, `${name}${dtsExt}.map`),
+      `{"version":3,"file":"${name}${dtsExt}","sourceRoot":"","sources":[".${target}"],"names":[],"mappings":"AAAA"}\n`,
+    );
   };
 
   for (const [name, target] of Object.entries(entryPoints)) {

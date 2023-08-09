@@ -29,6 +29,17 @@ export const extensionForFormatCreate = (
 export const requiredExtensions = (pkg: PackageContent): Extension[] =>
   requiredFormats(pkg).map(extensionForFormatCreate(pkg));
 
+export const dtsExtensionFromExtension = (ext: Extension) => {
+  switch (ext) {
+    case ".js":
+      return ".d.ts";
+    case ".mjs":
+      return ".d.mts";
+    case ".cjs":
+      return ".d.cts";
+  }
+};
+
 // TODO: need some better criteria but don't want to exclude private packages
 // but some may have it as a workspace package dep rather than dev dep on each package
 export const isTsmpkg = (proj: Project) =>
