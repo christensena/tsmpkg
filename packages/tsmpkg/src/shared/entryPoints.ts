@@ -13,18 +13,14 @@ export const entryPointsToExports = (
   return Object.fromEntries(
     Object.entries(entryPoints).map(([name]) => {
       const entryName = name === "index" ? "." : `./${name}`;
-      if (formats.length === 1 && formats[0] === "cjs") {
-        return [
-          entryName,
-          makeExportPath(name, extensionForFormat(formats[0])),
-        ];
-      }
       return [
         entryName,
-        {
-          import: makeExportPath(name, extensionForFormat("esm")),
-          require: makeExportPath(name, extensionForFormat("cjs")),
-        },
+        formats.length === 1
+          ? makeExportPath(name, extensionForFormat(formats[0]))
+          : {
+              import: makeExportPath(name, extensionForFormat("esm")),
+              require: makeExportPath(name, extensionForFormat("cjs")),
+            },
       ];
     }),
   );
