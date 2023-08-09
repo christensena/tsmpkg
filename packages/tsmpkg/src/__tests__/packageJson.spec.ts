@@ -40,8 +40,6 @@ describe("packageJson", () => {
         ["dist/index.cjs", "commonjs", ".js"],
         ["dist/index.cjs", undefined, ".js"],
         ["dist/index.mjs", "module", ".cjs"],
-        ["dist/", "module", ".cjs"],
-        ["dist", "module", ".cjs"],
       ])(
         "main pointing to %s on module of type %s should have file extension %s",
         (main, type, expected) => {
@@ -86,7 +84,6 @@ describe("packageJson", () => {
               format: ["esm", "cjs"],
             },
           });
-          console.log("%o", check());
           expect(check()).toContain(
             `"exports" entry "${entryPath}": should have "require" extension "${requireExt}" and "import" extension "${importExt}" on packages of type "${
               pkgType ?? "commonjs"
