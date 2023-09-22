@@ -10,9 +10,9 @@ import {
   isTsmpkg,
   requiredExtensions,
 } from "../shared/index.js";
-import { validate } from "../check/index.js";
 import chalk from "chalk";
 import { Extension } from "../shared/types.js";
+import { validate } from "../check/validate.js";
 
 const defaultTsupEntry = { index: "./src/index.ts" };
 
@@ -42,10 +42,9 @@ type DevOptions = {
 };
 
 export const devPkg = async (dir: string, options: DevOptions) => {
-  const valid = await validate(dir, options);
-  if (!valid) {
-    process.exit(1);
-  }
+  await validate(dir, {
+    contextLabel: path.relative(dir, options.workspaceDir),
+  });
   const pkg = await getPackageJsonContent(dir);
   const extensions = requiredExtensions(pkg);
 

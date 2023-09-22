@@ -1,4 +1,4 @@
-lockfileVersion: '6.1'
+lockfileVersion: '6.0'
 
 settings:
   autoInstallPeers: true
@@ -86,6 +86,9 @@ importers:
       chalk:
         specifier: ^5.3.0
         version: 5.3.0
+      dot-path-value:
+        specifier: ^0.0.10
+        version: 0.0.10
       fs-extra:
         specifier: ^11.1.1
         version: 11.1.1
@@ -1883,6 +1886,10 @@ packages:
     dependencies:
       esutils: 2.0.3
     dev: true
+
+  /dot-path-value@0.0.10:
+    resolution: {integrity: sha512-MrVpDoFwk1xjeM0sGRuei7N3LQOylJ9iamgfxAQwPY0hPnDHL981hM/KpoQwFHMckgjZvJA0MyH7VN//ernFFA==}
+    dev: false
 
   /eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}

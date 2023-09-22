@@ -14,3 +14,5 @@ export type Extension = ".js" | ".mjs" | ".cjs";
 export type Format = Exclude<TsupFormat, "iife">;
 
 export type PkgType = "module" | "commonjs";
+
+export type TsupConfig = TsupOptions;
