@@ -21,12 +21,12 @@
   "author": "Alan Christensen",
   "license": "ISC",
   "devDependencies": {
-    "@types/fs-extra": "^11.0.1",
-    "@types/node": "^20.4.8",
+    "@types/fs-extra": "^11.0.3",
+    "@types/node": "^20.8.10",
     "@types/npmcli__package-json": "^2.0.0",
     "tsup": "^7.2.0",
-    "typescript": "^5.1.6",
-    "vitest": "^0.34.1"
+    "typescript": "^5.2.2",
+    "vitest": "^0.34.6"
   },
   "dependencies": {
     "@npmcli/package-json": "^4.0.1",
