@@ -14,7 +14,16 @@ export const validateTsConfigJson = async (dir: string) => {
     return displayTsconfigValidationErrors(errors);
   } catch (err) {
     if (err instanceof InvalidTsConfigError) {
-      return displayTsconfigValidationErrors([err.message]);
+      const errors = [err.message];
+      let cause = err.cause;
+      while (cause instanceof Error) {
+        errors.push(cause.message);
+        cause = cause.cause;
+      }
+      if (cause) {
+        errors.push(String(cause));
+      }
+      return displayTsconfigValidationErrors(errors);
     }
     throw err;
   }
