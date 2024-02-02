@@ -1,32 +1,67 @@
+import { createRequire } from "node:module";
 import path from "node:path";
 import fsp from "node:fs/promises";
 
-import { load } from "tsconfig";
-import { parseTSConfigJSON } from "types-tsconfig";
+import type * as ts from "typescript";
 
-const attemptReadTsConfig = async (dir: string) => {
+// Find the typescript package for the given directory, and import it.
+const importTypescriptFor = async (dir: string): Promise<typeof ts> => {
+  // From node 20 we can use import.meta.resolve("typescript", dir), but that's
+  // not the minimum version we support yet.
+  // Note the trailing slash, otherwise it assumes dir is an importing file,
+  // and finds from the parent directory.
   try {
-    const tsconfig = await load(dir);
-    if (!tsconfig) {
-      return undefined;
-    }
-    return tsconfig;
-  } catch (err) {
-    throw new InvalidTsConfigError(err instanceof Error ? err : undefined);
+    return createRequire(dir + "/")("typescript");
+  } catch (cause) {
+    throw new InvalidTsConfigError(cause);
   }
 };
 
 export const readTsConfig = async (dir: string) => {
-  const tsconfig = await attemptReadTsConfig(dir);
-  if (!tsconfig) {
-    return;
+  const ts = await importTypescriptFor(dir);
+
+  const configPath = ts.findConfigFile(dir, ts.sys.fileExists);
+  if (!configPath) {
+    return undefined;
   }
 
-  const validatedTsconfig = parseTSConfigJSON(tsconfig.config);
-  if (!validatedTsconfig) {
-    throw new InvalidTsConfigError();
+  const throwInvalidTsConfigFromDiagnostics = (
+    diagnostics: ts.Diagnostic[],
+  ): never => {
+    const message = ts.formatDiagnosticsWithColorAndContext(diagnostics, {
+      getCanonicalFileName: (fileName) => fileName,
+      getCurrentDirectory: () => dir,
+      getNewLine: () => "\n",
+    });
+    throw new InvalidTsConfigError(message);
+  };
+
+  const result = ts.getParsedCommandLineOfConfigFile(
+    configPath,
+    {},
+    {
+      ...ts.sys,
+      // trace?(s: string): void
+      getCurrentDirectory: () => dir,
+      onUnRecoverableConfigFileDiagnostic(diagnostic) {
+        throwInvalidTsConfigFromDiagnostics([diagnostic]);
+      },
+    },
+  );
+
+  // I believe the result is only undefined if you don't throw from
+  // onUnRecoverableConfigFileDiagnostic().
+  if (!result) {
+    throw new InvalidTsConfigError(
+      "Unexpectedly undefined result from ts.getParsedCommandLineFromConfigFile().",
+    );
   }
-  return validatedTsconfig;
+
+  if (result.errors.length) {
+    throwInvalidTsConfigFromDiagnostics(result!.errors);
+  }
+
+  return result.raw;
 };
 
 export const writeTsConfig = async (dir: string, pkg: unknown) => {
@@ -35,8 +70,9 @@ export const writeTsConfig = async (dir: string, pkg: unknown) => {
 };
 
 export class InvalidTsConfigError extends Error {
-  constructor(err?: Error) {
-    super(`Invalid tsconfig.json. ${err?.message ?? ""}`.trimEnd());
-    InvalidTsConfigError.prototype.name = "InvalidTsConfigError";
+  name = "InvalidTsConfigError";
+
+  constructor(cause: unknown) {
+    super("Invalid tsconfig.json.", { cause });
   }
 }
