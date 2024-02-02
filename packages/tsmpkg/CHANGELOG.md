@@ -1,5 +1,11 @@
 # tsmpkg
 
+## 0.2.0
+
+### Minor Changes
+
+- b923d42: Parse tsconfig.json with packages's typescript.
+
 ## 0.1.1
 
 ### Patch Changes
