@@ -62,10 +62,12 @@ export const devPkg = async (dir: string, options: DevOptions) => {
   const entryPoints = getEntryPoints(pkg.tsup);
 
   const makeLinks = async (name: string, target: string, ext: Extension) => {
-    await fs.symlink(
-      path.join(dir, target),
-      path.join(distPath, `${name}${ext}`),
-    );
+    const targetPath = path.join(dir, target);
+    const linkPath = path.join(distPath, `${name}${ext}`);
+    // tsup.entry keys may contain subdirectories, so we need to ensure the
+    // parent directory exists before creating the symlink.
+    await fs.mkdir(path.dirname(linkPath), { recursive: true });
+    await fs.symlink(targetPath, linkPath);
 
     const dtsExt = dtsExtensionFromExtension(ext);
     await fs.writeFile(
