@@ -1,5 +1,11 @@
 # tsmpkg
 
+## 0.2.1
+
+### Patch Changes
+
+- f19c7fa: Fix issue where nested tsup.entry key would cause tsmpkg dev to fail.
+
 ## 0.2.0
 
 ### Minor Changes
