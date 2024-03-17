@@ -21,7 +21,7 @@
   "tsup": {
     "entry": {
       "index": "./src/index.ts",
-      "schemas": "./src/schemas/index.ts"
+      "schemas/index": "./src/schemas/index.ts"
     },
     "clean": true,
     "format": [
